@@ -16,7 +16,5 @@ namespace Domain.Entities
         public int OrderDetailId { get; set; }
         public OrderDetail OrderDetail { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; }
     }
 }

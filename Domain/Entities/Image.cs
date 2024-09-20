@@ -12,7 +12,7 @@ namespace Domain.Entities
         public string ImageUrl { get; set; }
 
         // Foreign key
-        public int KoiProductId { get; set; }
+        public int KoiId { get; set; }
         public Koi Koi { get; set; }
     }
 

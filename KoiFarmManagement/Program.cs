@@ -1,5 +1,5 @@
+using Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using KoiFarmManagement.Data;
 
 namespace KoiFarmManagement
 {

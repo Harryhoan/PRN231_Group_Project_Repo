@@ -13,14 +13,13 @@ namespace Domain.Entities
         public int Quantity { get; set; }
 
         // Foreign keys
-        public int ProductId { get; set; }
+        public int KoiId { get; set; }
         public Koi Koi { get; set; }
 
         public int OrderId { get; set; }
         public Order Order { get; set; }
 
         // Review foreign key
-        public int? ReviewId { get; set; }
         public Review Review { get; set; }
     }
 }
