@@ -9,6 +9,8 @@ namespace Domain.Entities
     public class Koi
     {
         public int Id { get; set; }
+        public int Size { get; set; }
+        public DateTime Dob { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
         public string Name { get; set; }
