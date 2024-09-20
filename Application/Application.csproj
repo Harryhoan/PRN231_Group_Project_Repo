@@ -10,10 +10,7 @@
     <Folder Include="Commons\" />
     <Folder Include="Enums\" />
     <Folder Include="IRepositories\" />
-    <Folder Include="IService\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Utils\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
