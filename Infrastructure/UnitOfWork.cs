@@ -1,4 +1,5 @@
 ﻿using Application;
+using Application.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,11 @@ namespace Infrastructure
         {
             _apiContext = apiContext;
         }
+
+        public IUserRepo UserRepository => UserRepository;
+
+        public ITokenRepo TokenRepo => TokenRepo;
+
         public Task<int> SaveChangeAsync()
         {
             return _apiContext.SaveChangesAsync();
