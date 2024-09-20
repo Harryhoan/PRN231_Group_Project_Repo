@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Application.ViewModels;
 namespace KoiFarmManagement
 {
     public class Program
@@ -27,6 +28,7 @@ namespace KoiFarmManagement
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); 
+            builder.Services.Configure<Cloud>(configuration.GetSection("Cloudinary"));
             builder.Services.AddSingleton(myConfig);
             builder.Services.AddInfrastructuresService();
             builder.Services.AddWebAPIService();

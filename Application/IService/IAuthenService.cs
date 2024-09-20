@@ -12,7 +12,6 @@ namespace Application.IService
     {
         public Task<ServiceResponse<cRegisterDTO>> cRegisterAsync(cRegisterDTO userObject);
         public Task<TokenResponse<string>> cLoginAsync(cLoginUserDTO userObject);
-        public Task<ServiceResponse<string>> cResendConfirmationTokenAsync(string email);
-
+        public Task<ServiceResponse<string>> cResendConfirmationTokenAsync(string email);       
     }
 }

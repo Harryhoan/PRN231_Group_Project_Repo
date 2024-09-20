@@ -17,8 +17,6 @@ namespace KoiFarmManagement
             {
                 option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             });
-
-
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHealthChecks();
@@ -26,8 +24,10 @@ namespace KoiFarmManagement
             services.AddScoped<ITokenRepo, TokenRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IKoiRepo, KoiRepo>();
             services.AddScoped<IAuthenService, AuthenService>();
-                return services;
+            services.AddScoped<IKoiService, KoiService>();
+            return services;
         }
     }
 }
