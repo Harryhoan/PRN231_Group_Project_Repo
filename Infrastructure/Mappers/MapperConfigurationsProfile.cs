@@ -1,4 +1,5 @@
-﻿using Application.ViewModels.UserDTO;
+﻿using Application.ViewModels;
+using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -14,6 +15,7 @@ namespace Infrastructure.Mappers
         public MapperConfigurationsProfile()
         {
             CreateMap<User, cRegisterDTO>().ReverseMap();
+            CreateMap<Koi, cCreateKOIDTO>().ReverseMap();
         }
     }
 }
