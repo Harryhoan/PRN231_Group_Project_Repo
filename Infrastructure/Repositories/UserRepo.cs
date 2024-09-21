@@ -12,13 +12,16 @@ namespace Infrastructure.Repositories
     public class UserRepo :  GenericRepo<User>, IUserRepo
     {
         private readonly ApiContext _dbContext;
+
         public UserRepo(ApiContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<bool> cCheckEmailAddressExisted(string sEmail) => 
-            await _dbContext.Users.AnyAsync(e => e.Email == sEmail);
+        public async Task<bool> cCheckEmailAddressExisted(string sEmail)
+        {
+            return await _dbContext.Users.AnyAsync(e => e.Email == sEmail);
+        }
 
         public async Task<User?> cGetByEmailAsync(string sEmail) => await _dbSet.FirstOrDefaultAsync(u => u.Email == sEmail);
 

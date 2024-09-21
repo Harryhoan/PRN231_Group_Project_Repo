@@ -13,20 +13,29 @@ namespace KoiFarmManagement
     {
         public static IServiceCollection AddWebAPIService(this IServiceCollection services)
         {
+            //services.AddControllers().AddJsonOptions(option =>
+            //{
+            //    option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            //});
+            //services.AddControllers().AddJsonOptions(option => option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicyExtensions.KebabCaseLower());
+            //services.AddControllers().AddJsonOptions(option => option.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.KebabCaseLower);
             services.AddControllers().AddJsonOptions(option =>
             {
-                option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                option.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
             });
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-            services.AddHealthChecks();
-            services.AddSingleton<Stopwatch>();
-            services.AddScoped<ITokenRepo, TokenRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IKoiRepo, KoiRepo>();
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IKoiService, KoiService>();
+
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+            services.AddHealthChecks();
+            services.AddSingleton<Stopwatch>();
+            services.AddScoped<ITokenRepo, TokenRepo>();
+            
             return services;
         }
     }

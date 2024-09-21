@@ -1,15 +1,23 @@
+using System.Reflection;
 using Application.Commons;
 using Infrastructure;
+using Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
 using KoiFarmManagement.Middlewares;
-using Infrastructure.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using Application.ViewModels;
+using CloudinaryDotNet;
+using Microsoft.Extensions.Options;
+using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Application.IRepositories;
+using Application;
+using Infrastructure.Repositories;
+
 namespace KoiFarmManagement
 {
     public class Program
@@ -20,22 +28,41 @@ namespace KoiFarmManagement
 
             // Add services to the container.
             var configuration = builder.Configuration;
-            builder.Services.AddControllers();
             var myConfig = new AppConfiguration(); 
             configuration.Bind(myConfig);
+            
+    
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddDbContext<ApiContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); 
-            builder.Services.Configure<Cloud>(configuration.GetSection("Cloudinary"));
+            builder.Services.Configure<Cloud>(configuration.GetSection("Cloudinary")); 
+            builder.Services.AddSingleton(provider =>
+            {
+                var config = provider.GetRequiredService<IOptions<Cloud>>().Value;
+                return new Cloudinary(new Account(
+                    config.CloudName,
+                    config.ApiKey,
+                    config.ApiSecret));
+            });
             builder.Services.AddSingleton(myConfig);
             builder.Services.AddInfrastructuresService();
             builder.Services.AddWebAPIService();
-            builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
+            
+            //builder.Services.AddAutoMapper((Type[] types) => types.Select(t => t.GetTypeInfo().Assembly), typeof(MapperConfigurationsProfile));
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MapperConfigurationsProfile>();
+            });
+
+            var mapper = mapperConfiguration.CreateMapper();
+            builder.Services.AddSingleton(mapper);
+
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen();                   
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
@@ -111,9 +138,9 @@ namespace KoiFarmManagement
                 c.SwaggerEndpoint("swagger/v1/swagger.json", "KoiFarmShopApI v1");
                 c.RoutePrefix = string.Empty;
             });
-            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowAll");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<ConfirmationTokenMiddleware>();
 
