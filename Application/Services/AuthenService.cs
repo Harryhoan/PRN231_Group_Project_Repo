@@ -104,7 +104,7 @@ namespace Application.Services
                 };
                 await _unitOfWork.TokenRepo.AddAsync(confirmationToken);
                 var confirmationLink =
-                    $"https://zodiacjewerlyswd.azurewebsites.net/confirm?token={confirmationToken.TokenValue}";
+                    $"https://koifarmmanagement-axevbhdzh9edauf8.eastus-01.azurewebsites.net/confirm?token={confirmationToken.TokenValue}";
 
                 //SendMail
                 var emailSend = await SendMail.SendConfirmationEmail(userObject.Email, confirmationLink);
