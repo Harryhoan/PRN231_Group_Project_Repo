@@ -26,11 +26,17 @@ namespace KoiFarmManagement.Middlewares
 
                     if (token != null && token.User != null && !token.User.AccountLocked)
                     {
+                        if(DateTime.UtcNow > token.ExpiresAt)
+                        {
+                            //context.Response.Redirect("https://zodiacgems.vercel.app/login");
+                            await context.Response.WriteAsync("Token xác nhận đã hết hạn. Vui lòng yêu cầu gửi lại email xác nhận.");
+                            return;
+                        }
                         token.User.AccountLocked = true;
                         token.TokenValue = "success";
 
                         await unitOfWork.SaveChangeAsync();                       
-                        context.Response.Redirect("https://zodiacgems.vercel.app/login");
+                        context.Response.Redirect("http://localhost:3000/login");
                         return;
                     }
                 }
