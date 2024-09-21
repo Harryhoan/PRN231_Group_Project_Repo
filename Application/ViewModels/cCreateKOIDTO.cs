@@ -13,10 +13,10 @@ namespace Application.ViewModels
 
         [Required(ErrorMessage = "Product name is required")]
         [StringLength(100, ErrorMessage = "Product name can't be longer than 100 characters")]
-        public string NameKoi { get; set; }
+        public string Namekoi { get; set; }
 
         [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
-        public string DescriptionKoi { get; set; }
+        public string Descriptionkoi { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
         [Range(0, double.MaxValue, ErrorMessage = "Price must be a non-negative number")]
@@ -36,6 +36,6 @@ namespace Application.ViewModels
         { get; set; }
         [Required(ErrorMessage = "Category ID is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Category ID must be a positive integer")]
-        public int CategoryId { get; set; }
+        public int Categoryid { get; set; }
     }
 }

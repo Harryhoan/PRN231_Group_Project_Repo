@@ -10,7 +10,7 @@ namespace Application.ViewModels.UserDTO
     {
         public string Email { get; set; }
         public string Password { get; set; }
-        public string FullName { get; set; }
-        public string TelephoneNumber { get; set; }
+        public string Fullname { get; set; }
+        public string Telephonenumber { get; set; }
     }
 }
