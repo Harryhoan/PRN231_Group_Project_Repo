@@ -41,8 +41,8 @@ namespace Application.Services
                     return response;
                 }
                 var token = await _unitOfWork.TokenRepo.cGetTokenByUserIdAsync(userLogin.Id);
-                if(token != null)
-                {
+                if(token != null && token.TokenValue != "success")
+                {                   
                     response.Success = false;
                     response.Message = "Please confirm via link in your mail";
                     return response;
@@ -149,7 +149,7 @@ namespace Application.Services
                     return response;
                 }
                 var token = await _unitOfWork.TokenRepo.cFindByConditionAsync(user.Id, "confirmation");
-                if (token == null)
+                if (token != null && token.TokenValue == "success")
                 {
                     response.Success = false;
                     response.Message = "Email của bạn đã được xác nhận.";
@@ -163,7 +163,7 @@ namespace Application.Services
                         TokenValue = Guid.NewGuid().ToString(),
                         Type = "confirmation",
                         CreatedAt = DateTime.UtcNow,
-                        ExpiresAt = DateTime.UtcNow.AddMinutes(10), // Token mới có hiệu lực trong 10 phút
+                        ExpiresAt = DateTime.UtcNow.AddMinutes(10),
                         UserId = user.Id
                     };
 

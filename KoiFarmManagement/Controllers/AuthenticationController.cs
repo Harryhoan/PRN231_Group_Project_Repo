@@ -54,5 +54,20 @@ namespace KoiFarmManagement.Controllers
                 );
             }
         }
+        [HttpPost("resend")]
+        public async Task<IActionResult> ReSendConfirm(string sEmail)
+        {
+            var result = await _authenService.cResendConfirmationTokenAsync(sEmail);
+
+            if (!result.Success)
+            {
+                return StatusCode(401, result);
+            }
+            else
+            {
+                return Ok(result);
+            }
+        }
+
     }
 }
