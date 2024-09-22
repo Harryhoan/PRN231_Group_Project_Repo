@@ -5,16 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.ViewModels
+namespace Application.ViewModels.KoiDTO
 {
     public class cCreateKOIDTO
     {
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "Product name is required")]
-        [StringLength(100, ErrorMessage = "Product name can't be longer than 100 characters")]
-        public string NameKoi { get; set; }
-
         [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
         public string DescriptionKoi { get; set; }
 

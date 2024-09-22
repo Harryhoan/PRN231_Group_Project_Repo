@@ -10,6 +10,7 @@ namespace Application.IRepositories
     {
         Task<List<T>> GetAllAsync();
         Task<T?> GetByIdAsync(Guid id);
+        Task<T?> GetByIdAsync(int id);
         Task AddAsync(T entity);
         Task Update(T entity);
         Task Remove(T entity);

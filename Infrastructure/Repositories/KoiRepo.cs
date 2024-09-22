@@ -1,5 +1,7 @@
 ﻿using Application.IRepositories;
+using Application.ViewModels.KoiDTO;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,70 @@ namespace Infrastructure.Repositories
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while adding the koi.", ex);
+            }
+        }
+        public async Task<List<Koi>> dGetFilteredKois(dFilterKoiDTO filter)
+        {
+            try
+            {
+                var query = _dbContext.Kois.AsNoTracking().Include(k => k.Category).AsQueryable();
+                if (query == null)
+                {
+                    throw new ArgumentNullException("Finding any Koi produces an invalid result.");
+                }
+                if (query.Any())
+                {
+                    if (filter.Id.HasValue)
+                    {
+                        query = query.Where(k => k.Id == filter.Id.Value);
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.Description))
+                    {
+                        query = query.Where(k => k.Description.Contains(filter.Description));
+                    }
+
+                    if (filter.MinPrice.HasValue)
+                    {
+                        query = query.Where(k => k.Price >= filter.MinPrice.Value);
+                    }
+
+                    if (filter.MaxPrice.HasValue)
+                    {
+                        query = query.Where(k => k.Price <= filter.MaxPrice.Value);
+                    }
+
+                    if (filter.MinSize.HasValue)
+                    {
+                        query = query.Where(k => k.Size >= filter.MinSize.Value);
+                    }
+
+                    if (filter.MaxSize.HasValue)
+                    {
+                        query = query.Where(k => k.Size <= filter.MaxSize.Value);
+                    }
+
+                    if (filter.DobStart.HasValue)
+                    {
+                        query = query.Where(k => k.Dob >= filter.DobStart.Value);
+                    }
+
+                    if (filter.DobEnd.HasValue)
+                    {
+                        query = query.Where(k => k.Dob <= filter.DobEnd.Value);
+                    }
+
+                    if (filter.CategoryId.HasValue)
+                    {
+                        query = query.Where(k => k.CategoryId == filter.CategoryId.Value);
+                    }
+                }
+                return await query.ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while getting the kois.", ex);
             }
         }
     }
