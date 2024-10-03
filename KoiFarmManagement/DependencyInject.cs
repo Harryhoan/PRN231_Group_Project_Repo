@@ -23,11 +23,12 @@ namespace KoiFarmManagement
             {
                 option.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
             });
-            services.AddScoped<IUserRepo, UserRepo>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IKoiRepo, KoiRepo>();
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IKoiService, KoiService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();

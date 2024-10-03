@@ -19,9 +19,9 @@ namespace Infrastructure
         {
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<ITokenRepo, TokenRepo>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IKoiRepo, KoiRepo>();
-            services.AddScoped<IAuthenService, AuthenService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<IKoiService, KoiService>();
             return services;
         }
