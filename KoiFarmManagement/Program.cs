@@ -17,6 +17,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Application.IRepositories;
 using Application;
 using Infrastructure.Repositories;
+using System.IO;
+using System.Linq;
+using System;
 
 namespace KoiFarmManagement
 {
@@ -28,16 +31,15 @@ namespace KoiFarmManagement
 
             // Add services to the container.
             var configuration = builder.Configuration;
-            var myConfig = new AppConfiguration(); 
+            var myConfig = new AppConfiguration();
             configuration.Bind(myConfig);
-            
-    
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddDbContext<ApiContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            }); 
-            builder.Services.Configure<Cloud>(configuration.GetSection("Cloudinary")); 
+            });
+            builder.Services.Configure<Cloud>(configuration.GetSection("Cloudinary"));
             builder.Services.AddSingleton(provider =>
             {
                 var config = provider.GetRequiredService<IOptions<Cloud>>().Value;
@@ -49,8 +51,7 @@ namespace KoiFarmManagement
             builder.Services.AddSingleton(myConfig);
             builder.Services.AddInfrastructuresService();
             builder.Services.AddWebAPIService();
-            
-            //builder.Services.AddAutoMapper((Type[] types) => types.Select(t => t.GetTypeInfo().Assembly), typeof(MapperConfigurationsProfile));
+
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<MapperConfigurationsProfile>();
@@ -59,10 +60,8 @@ namespace KoiFarmManagement
             var mapper = mapperConfiguration.CreateMapper();
             builder.Services.AddSingleton(mapper);
 
-
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();                   
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
@@ -72,13 +71,13 @@ namespace KoiFarmManagement
                                 .AllowAnyMethod()
                                 .AllowAnyHeader();
                            });
-            }); 
+            });
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
                 options.AddPolicy("Staff", policy => policy.RequireRole("Staff"));
                 options.AddPolicy("Customer", policy => policy.RequireRole("Customer"));
-            }); 
+            });
             builder.Services.AddDistributedMemoryCache();
 
             builder.Services.AddSession(options =>
@@ -91,22 +90,21 @@ namespace KoiFarmManagement
                 .AddJwtBearer(options =>
                 {
                     IConfiguration config = (IConfiguration)configuration;
-                     options.TokenValidationParameters = new TokenValidationParameters
-                        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
 
-            ValidIssuer = configuration["JWTSection:Issuer"],
-            ValidAudience = configuration["JWTSection:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))
-                        };
-                        });
+                        ValidIssuer = configuration["JWTSection:Issuer"],
+                        ValidAudience = configuration["JWTSection:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))
+                    };
+                });
 
             builder.Services.AddSwaggerGen(c =>
             {
-
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
@@ -122,7 +120,25 @@ namespace KoiFarmManagement
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
                     Scheme = "bearer"
-                });             
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
             var app = builder.Build();
             app.UseDeveloperExceptionPage();

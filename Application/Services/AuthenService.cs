@@ -32,7 +32,7 @@ namespace Application.Services
             try
             {
                 var passHash = HashPassWithSHA256.HashWithSHA256(userObject.Password);
-                var userLogin = await _unitOfWork.UserRepository.cGetUserByEmailAddressAndPasswordHash(userObject.Email, passHash);
+                var userLogin = await _unitOfWork.UserRepository.cGetUserByEmailAddressAndPasswordHash(userObject.Username, passHash);
                 if (userLogin == null)
                 {
                     response.Success = false;
