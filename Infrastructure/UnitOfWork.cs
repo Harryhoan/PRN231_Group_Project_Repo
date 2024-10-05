@@ -14,22 +14,26 @@ namespace Infrastructure
         private readonly ApiContext _apiContext;
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo)
-        {
-            //if (apiContext == null) throw new ArgumentNullException(nameof(apiContext));
-            //if (userRepository == null) throw new ArgumentNullException(nameof(userRepository));
-            //if (tokenRepo == null) throw new ArgumentNullException(nameof(tokenRepo));
-            //_apiContext = apiContext;
-            //_userRepository = userRepository;
-            //_tokenRepo = tokenRepo;
-            _apiContext = apiContext ?? throw new ArgumentNullException(nameof(apiContext));
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _tokenRepo = tokenRepo ?? throw new ArgumentNullException(nameof(tokenRepo));
-        }
+		private readonly IOrderRepo _orderRepo;
+		public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IOrderRepo orderRepo)
+		{
+			//if (apiContext == null) throw new ArgumentNullException(nameof(apiContext));
+			//if (userRepository == null) throw new ArgumentNullException(nameof(userRepository));
+			//if (tokenRepo == null) throw new ArgumentNullException(nameof(tokenRepo));
+			//_apiContext = apiContext;
+			//_userRepository = userRepository;
+			//_tokenRepo = tokenRepo;
+			_apiContext = apiContext ?? throw new ArgumentNullException(nameof(apiContext));
+			_userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+			_tokenRepo = tokenRepo ?? throw new ArgumentNullException(nameof(tokenRepo));
+			_orderRepo = orderRepo;
+		}
 
-        public IUserRepo UserRepository => _userRepository;
+		public IUserRepo UserRepository => _userRepository;
 
         public ITokenRepo TokenRepo => _tokenRepo;
+
+        public IOrderRepo OrderRepository => _orderRepo;
 
         public async Task<int> SaveChangeAsync()
         {

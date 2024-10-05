@@ -113,6 +113,11 @@ namespace Application.Services
                     response.Message = "Error when send mail";
                     return response;
                 }
+                Order order = new Order();
+                order.UserId = userAccountRegister.Id;
+                order.ShippingFee = 0;
+                order.TotalPrice = 0;
+				await _unitOfWork.OrderRepository.AddAsync(order); 
 
                 var accountRegistedDTO = _mapper.Map<cRegisterDTO>(userAccountRegister);
                 response.Success = true;

@@ -11,6 +11,7 @@ namespace Application
     {
         public IUserRepo UserRepository { get; }
         public ITokenRepo TokenRepo { get; }
-        public Task<int> SaveChangeAsync();
+        public IOrderRepo OrderRepository { get; }
+		public Task<int> SaveChangeAsync();
     }
 }
