@@ -1,4 +1,5 @@
-﻿using Application.ViewModels;
+﻿using Application.ViewModels.CategoryDTO;
+using Application.ViewModels.KoiDTO;
 using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
@@ -17,7 +18,9 @@ namespace Infrastructure.Mappers
             CreateMap<User, cRegisterDTO>().ReverseMap();
             CreateMap<User, cLoginUserDTO>().ReverseMap();
             CreateMap<Koi, cCreateKOIDTO>().ReverseMap();
-
+            CreateMap<Category, dCreateCategoryDTO>().ReverseMap();
+            //CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
+            //      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
         }
     }
 }

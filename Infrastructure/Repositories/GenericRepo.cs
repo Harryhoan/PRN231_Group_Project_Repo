@@ -32,9 +32,14 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<T?> GetByIdAsync(Guid id)
+        public async Task<T?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.FindAsync(id);
+        }
+
+        public async Task<T?> GetByIdAsync(int id)
+        {
+            return await _dbSet.FindAsync(id);
         }
 
         public Task Remove(T entity)
@@ -52,6 +57,6 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        
+
     }
 }

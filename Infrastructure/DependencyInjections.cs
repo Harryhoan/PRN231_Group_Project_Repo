@@ -13,17 +13,17 @@ using Application.IService;
 
 namespace Infrastructure
 {
-    public static class DependencyInjections
-    {
-        public static IServiceCollection AddInfrastructuresService(this IServiceCollection services)
-        {
-            services.AddScoped<IUserRepo, UserRepo>();
-            services.AddScoped<ITokenRepo, TokenRepo>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IKoiRepo, KoiRepo>();
-            services.AddScoped<IAuthenService, AuthenService>();
-            services.AddScoped<IKoiService, KoiService>();
-            return services;
-        }
-    }
+	public static class DependencyInjections
+	{
+		public static IServiceCollection AddInfrastructuresService(this IServiceCollection services)
+		{
+			services.AddScoped<IUserRepo, UserRepo>();
+			services.AddScoped<ITokenRepo, TokenRepo>();
+			services.AddScoped<IKoiRepo, KoiRepo>();
+			services.AddScoped<ICategoryService, CategoryService>();
+			services.AddScoped<ICategoryRepo, CategoryRepo>();
+			services.AddScoped<IOrderRepo, OrderRepo>();
+			return services;
+		}
+	}
 }
