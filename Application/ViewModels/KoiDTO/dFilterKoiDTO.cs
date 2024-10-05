@@ -9,11 +9,11 @@ namespace Application.ViewModels.KoiDTO
 {
     public class dFilterKoiDTO
     {
-        public int? Id { get; set; }
-        [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
-        public string? Description { get; set; }
 
-        [Range(0, double.MaxValue, ErrorMessage = "Minimum price must be a non-negative number")]
+        [StringLength(100, ErrorMessage="Too long")]
+        public string? Query { get; set; }
+
+        [Range(0, double.MinValue, ErrorMessage = "Minimum price must be a non-negative number")]
         public decimal? MinPrice { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "Maximum price must be a non-negative number")]
@@ -33,7 +33,6 @@ namespace Application.ViewModels.KoiDTO
 
         [Range(1, int.MaxValue, ErrorMessage = "Category ID must be a positive integer")]
         public int? CategoryId { get; set; }
-
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }

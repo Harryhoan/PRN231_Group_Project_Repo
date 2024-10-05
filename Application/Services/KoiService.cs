@@ -58,7 +58,7 @@ namespace Application.Services
             }
             return response;
         }
-        public async Task<ServiceResponse<PaginationModel<Koi>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter)
+        public async Task<ServiceResponse<PaginationModel<dViewKoiDTO>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter)
         {
             var response = new ServiceResponse<PaginationModel<Koi>>();
 
@@ -74,7 +74,7 @@ namespace Application.Services
 
                 koiList.Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize);
-                var paginationModel = new PaginationModel<Koi>
+                var paginationModel = new PaginationModel<dViewKoiDTO>
                 {
                     Page = filter.PageNumber,
                     TotalPage = (int)Math.Ceiling(totalRecords / (double)filter.PageSize),

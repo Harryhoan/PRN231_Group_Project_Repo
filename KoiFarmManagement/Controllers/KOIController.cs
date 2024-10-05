@@ -33,7 +33,7 @@ namespace KoiFarmManagement.Controllers
 
         [AllowAnonymous]
         [HttpGet("filter")]
-        public async Task<IActionResult> GetFilteredKOIsAsync([FromBody] dFilterKoiDTO filter)
+        public async Task<IActionResult> GetFilteredKOIsAsync(dFilterKoiDTO filter)
         {
             var result = await _koiService.dGetFilteredKOIsAsync(filter);
             if (!result.Success)

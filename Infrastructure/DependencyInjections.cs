@@ -22,7 +22,6 @@ namespace Infrastructure
             services.AddScoped<IKoiRepo, KoiRepo>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepo, CategoryRepo>();
-            services.AddScoped<IKoiService, KoiService>();
             return services;
         }
     }
