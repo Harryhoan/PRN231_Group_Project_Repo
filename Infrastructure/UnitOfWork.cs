@@ -15,7 +15,7 @@ namespace Infrastructure
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
         private readonly IKoiRepo _koiRepo;
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IKoiRepo koiRepo)
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ICategoryRepo categoryRepo, IKoiRepo koiRepo, IOrderRepo orderRepo)
         {
             //if (apiContext == null) throw new ArgumentNullException(nameof(apiContext));
             //if (userRepository == null) throw new ArgumentNullException(nameof(userRepository));
@@ -26,26 +26,32 @@ namespace Infrastructure
             _apiContext = apiContext ?? throw new ArgumentNullException(nameof(apiContext));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _tokenRepo = tokenRepo ?? throw new ArgumentNullException(nameof(tokenRepo));
-            _koiRepo = koiRepo ?? throw new ArgumentNullException(nameof(koiRepo));
+           _categoryRepo = categoryRepo ?? throw new ArgumentNullException(nameof(categoryRepo));
+			_koiRepo = koiRepo ?? throw new ArgumentNullException(nameof(koiRepo));
+			_orderRepo = orderRepo ?? throw new ArgumentNullException(nameof(orderRepo));
+
         }
+		public IUserRepo UserRepository => _userRepository;
 
-        public IUserRepo UserRepository => _userRepository;
-        public IKoiRepo KoiRepository => _koiRepo;
+		public ITokenRepo TokenRepo => _tokenRepo;
 
-        public ITokenRepo TokenRepo => _tokenRepo;
+		public ICategoryRepo CategoryRepo => _categoryRepo;
 
-        public async Task<int> SaveChangeAsync()
-        {
-            //return _apiContext.SaveChangesAsync();
-            try
-            {
-                return await _apiContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                // Log exception details here
-                throw new ApplicationException("An error occurred while saving changes.", ex);
-            }
-        }
-    }
+		public IKoiRepo KoiRepo => _koiRepo;
+		public IOrderRepo OrderRepo => _orderRepo;
+
+		public async Task<int> SaveChangeAsync()
+		{
+			//return _apiContext.SaveChangesAsync();
+			try
+			{
+				return await _apiContext.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				// Log exception details here
+				throw new ApplicationException("An error occurred while saving changes.", ex);
+			}
+		}
+	}
 }

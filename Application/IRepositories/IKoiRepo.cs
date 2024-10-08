@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.ViewModels.KoiDTO;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,8 @@ namespace Application.IRepositories
     {
         Task cAddKoi(Koi koi); 
         Task<IEnumerable<Koi>> GetAllKOI();
+        Task<List<Koi>> dGetFilteredKois(dFilterKoiDTO filter);
+        Task<Koi?> dGetKoiWithCategory(int id);
+
     }
 }

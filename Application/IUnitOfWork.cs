@@ -12,6 +12,8 @@ namespace Application
         public IUserRepo UserRepository { get; }
         public IKoiRepo KoiRepository { get; }
         public ITokenRepo TokenRepo { get; }
+        public ICategoryRepo CategoryRepo { get; }
+        public IKoiRepo KoiRepo { get; }
         public Task<int> SaveChangeAsync();
     }
 }

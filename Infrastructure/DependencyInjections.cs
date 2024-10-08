@@ -24,7 +24,13 @@ namespace Infrastructure
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IKoiService, KoiService>();
             services.AddScoped<cIUserService, cUserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+			services.AddScoped<ICategoryRepo, CategoryRepo>();
+			services.AddScoped<IOrderRepo, OrderRepo>();
+
+
             return services;
         }
     }
+	
 }

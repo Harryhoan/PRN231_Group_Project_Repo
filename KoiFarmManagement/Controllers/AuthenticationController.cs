@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KoiFarmManagement.Controllers
 {
+    /// <summary>
+    /// Handles authentication-related actions, such as registration, login, and resending confirmation tokens.
+    /// </summary>
     [EnableCors("Allow")]
     [Route("api/authentication")]
     [ApiController]
@@ -13,10 +16,20 @@ namespace KoiFarmManagement.Controllers
     {
         private readonly IAuthenService _authenService;
 
+        /// <summary>
+        /// Constructor for the AuthenticationController.
+        /// </summary>
+        /// <param name="authent">The authentication service used to handle authentication requests.</param>
         public AuthenticationController(IAuthenService authent)
         {
             _authenService = authent;
         }
+
+        /// <summary>
+        /// Registers a new user with the provided registration details.
+        /// </summary>
+        /// <param name="registerObject">The registration details for the new user.</param>
+        /// <returns>A response indicating success or failure of the registration.</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register(cRegisterDTO registerObject)
         {
@@ -31,6 +44,12 @@ namespace KoiFarmManagement.Controllers
                 return Ok(result);
             }
         }
+
+        /// <summary>
+        /// Logs in an existing user with the provided login details.
+        /// </summary>
+        /// <param name="loginObject">The login details including username and password.</param>
+        /// <returns>A response indicating success or failure of the login, along with a token and user role if successful.</returns>
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(cLoginUserDTO loginObject)
         {
@@ -54,6 +73,12 @@ namespace KoiFarmManagement.Controllers
                 );
             }
         }
+
+        /// <summary>
+        /// Resends the confirmation token to the specified email address.
+        /// </summary>
+        /// <param name="sEmail">The email address to which the confirmation token will be resent.</param>
+        /// <returns>A response indicating success or failure of the resend action.</returns>
         [HttpPost("resend")]
         public async Task<IActionResult> ReSendConfirm(string sEmail)
         {
@@ -68,6 +93,5 @@ namespace KoiFarmManagement.Controllers
                 return Ok(result);
             }
         }
-
     }
 }

@@ -32,7 +32,7 @@ namespace Application.Services
             try
             {
                 var passHash = HashPassWithSHA256.HashWithSHA256(userObject.Password);
-                var userLogin = await _unitOfWork.UserRepository.cGetUserByEmailAddressAndPasswordHash(userObject.Email, passHash);
+                var userLogin = await _unitOfWork.UserRepository.cGetUserByEmailAddressAndPasswordHash(userObject.Username, passHash);
                 if (userLogin == null)
                 {
                     response.Success = false;
@@ -113,6 +113,11 @@ namespace Application.Services
                     response.Message = "Error when send mail";
                     return response;
                 }
+                Order order = new Order();
+                order.UserId = userAccountRegister.Id;
+                order.ShippingFee = 0;
+                order.TotalPrice = 0;
+				await _unitOfWork.OrderRepository.AddAsync(order); 
 
                 var accountRegistedDTO = _mapper.Map<cRegisterDTO>(userAccountRegister);
                 response.Success = true;

@@ -1,5 +1,5 @@
 ﻿using Application.IService;
-using Application.ViewModels;
+using Application.ViewModels.KoiDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -30,11 +30,10 @@ namespace KoiFarmManagement.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> GetAllProductsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 5,
-            [FromQuery] string? search = "", [FromQuery] string? sort = "")
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredKOIsAsync(dFilterKoiDTO filter)
         {
-            var result = await _koiService.GetAllKoisAsync(page, pageSize, search, sort);
+            var result = await _koiService.dGetFilteredKOIsAsync(filter);
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -42,5 +41,35 @@ namespace KoiFarmManagement.Controllers
             
             return Ok(result);
         }
+
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("get")]
+        public async Task<IActionResult> GetAllKoisAsync(int pageNumber, int pageSize)
+        {
+            var result = await _koiService.dGetAllKois(pageNumber, pageSize);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetKoiById(int id)
+        {
+            var result = await _koiService.dGetKOIById(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
     }
 }
