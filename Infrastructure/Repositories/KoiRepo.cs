@@ -42,6 +42,7 @@ namespace Infrastructure.Repositories
                 .Include(p => p.Images)
                 .AsNoTracking()
                 .ToListAsync();
+        }
         public async Task<List<Koi>> dGetFilteredKois(dFilterKoiDTO filter)
         {
             try

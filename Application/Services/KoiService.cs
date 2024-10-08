@@ -18,11 +18,13 @@ namespace Application.Services
     public class KoiService : IKoiService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IKoiRepo _koiRepo;
         private readonly IMapper _mapper;
-        public KoiService(IUnitOfWork unitOfWork, IMapper mapper)
+        public KoiService(IUnitOfWork unitOfWork, IMapper mapper, IKoiRepo koiRepo)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _koiRepo = koiRepo;
         }
         private Koi MapToEntityCreate(cCreateKOIDTO CreateProductDTO)
         {
@@ -61,11 +63,10 @@ namespace Application.Services
             return response;
         }
 
-        public async Task<ServiceResponse<PaginationModel<cKOIDTO>>> GetAllKoisAsync(int page, int pageSize, 
-            string search, string sort)
+        public async Task<ServiceResponse<PaginationModel<cKOIDTO>>> cGetAllKoisAsync(int page, int pageSize,
+           string search, string sort)
         {
             var response = new ServiceResponse<PaginationModel<cKOIDTO>>();
-
             try
             {
                 var products = await _koiRepo.GetAllKOI();
@@ -73,7 +74,6 @@ namespace Application.Services
                 {
                     products = products.Where(p => p.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
                 }
-
                 products = sort.ToLower() switch
                 {
                     "name" => products.OrderBy(p => p.Name),
@@ -83,16 +83,21 @@ namespace Application.Services
                     _ => products.OrderBy(p => p.Id)
                 };
                 var productDTOs = MapToDTO(products); // Map products to ProductDTO
-
                 // Apply pagination
                 var paginationModel = await cPagination.GetPaginationIENUM(productDTOs, page, pageSize);
-
                 response.Data = paginationModel;
                 response.Success = true;
-        public async Task<ServiceResponse<PaginationModel<dViewKoiDTO>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter)
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to retrieve products: {ex.Message}";
+            }
+            return response;
+        }
+        public async Task<ServiceResponse<PaginationModel<Koi>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter)
         {
             var response = new ServiceResponse<PaginationModel<Koi>>();
-
             try
             {
                 var koiList = await _unitOfWork.KoiRepo.dGetFilteredKois(filter);
@@ -100,29 +105,24 @@ namespace Application.Services
                 {
                     throw new ArgumentNullException(nameof(filter));
                 }
-
                 var totalRecords = koiList.Count();
-
                 koiList.Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize);
-                var paginationModel = new PaginationModel<dViewKoiDTO>
+                var paginationModel = new PaginationModel<Koi>
                 {
                     Page = filter.PageNumber,
                     TotalPage = (int)Math.Ceiling(totalRecords / (double)filter.PageSize),
                     TotalRecords = totalRecords,
                     ListData = koiList
                 };
-
                 response.Data = paginationModel;
                 response.Success = true;
-
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = $"Failed to retrieve products: {ex.Message}";
+                response.Message = $"Failed to create product: {ex.Message}";
             }
-
             return response;
         }
         private IEnumerable<cKOIDTO> MapToDTO(IEnumerable<Koi> kois)
@@ -134,10 +134,6 @@ namespace Application.Services
             var productDTO = _mapper.Map<cKOIDTO>(koi);
             productDTO.ImageUrls = koi.Images?.Select(pi => pi.ImageUrl).ToList();
             return productDTO;
-        }
-                response.Message = $"Failed to create product: {ex.Message}";
-            }
-            return response;
         }
         public async Task<ServiceResponse<PaginationModel<Koi>>> dGetAllKois(int pageNumber, int pageSize)
         {
@@ -209,6 +205,7 @@ namespace Application.Services
             }
             return response;
         }
-
+    
+       
     }
 }

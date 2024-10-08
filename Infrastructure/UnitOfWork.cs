@@ -15,7 +15,10 @@ namespace Infrastructure
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
         private readonly IKoiRepo _koiRepo;
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ICategoryRepo categoryRepo, IKoiRepo koiRepo, IOrderRepo orderRepo)
+        private readonly ICategoryRepo _categoryRepo;
+        private readonly IOrderRepo _orderRepo;
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository,
+            ITokenRepo tokenRepo, ICategoryRepo categoryRepo, IKoiRepo koiRepo, IOrderRepo orderRepo)
         {
             //if (apiContext == null) throw new ArgumentNullException(nameof(apiContext));
             //if (userRepository == null) throw new ArgumentNullException(nameof(userRepository));
@@ -28,8 +31,7 @@ namespace Infrastructure
             _tokenRepo = tokenRepo ?? throw new ArgumentNullException(nameof(tokenRepo));
            _categoryRepo = categoryRepo ?? throw new ArgumentNullException(nameof(categoryRepo));
 			_koiRepo = koiRepo ?? throw new ArgumentNullException(nameof(koiRepo));
-			_orderRepo = orderRepo ?? throw new ArgumentNullException(nameof(orderRepo));
-
+            _orderRepo = orderRepo ?? throw new ArgumentNullException(nameof(orderRepo));
         }
 		public IUserRepo UserRepository => _userRepository;
 
@@ -38,9 +40,10 @@ namespace Infrastructure
 		public ICategoryRepo CategoryRepo => _categoryRepo;
 
 		public IKoiRepo KoiRepo => _koiRepo;
-		public IOrderRepo OrderRepo => _orderRepo;
 
-		public async Task<int> SaveChangeAsync()
+        public IOrderRepo OrderRepository => _orderRepo;
+
+        public async Task<int> SaveChangeAsync()
 		{
 			//return _apiContext.SaveChangesAsync();
 			try
