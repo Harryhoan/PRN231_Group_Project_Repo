@@ -16,7 +16,13 @@ namespace KoiFarmManagement.Controllers
         public KOIController(IKoiService koiService)
         {
             _koiService = koiService;
-        }       
+        }
+
+        /// <summary>
+        /// Create Product By Admin
+        /// </summary>
+        /// <param name="registerObject">The registration details for the new user.</param>
+        /// <returns>A response indicating success or failure of the registration.</returns>
         [HttpPost]    
         public async Task<IActionResult> CreateProductAsync(cCreateKOIDTO product)
         {
@@ -42,9 +48,7 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
-            return Ok(result);
-        }
-
+    
         [AllowAnonymous]
         [HttpGet("get")]
         public async Task<IActionResult> GetAllKoisAsync(int pageNumber, int pageSize)

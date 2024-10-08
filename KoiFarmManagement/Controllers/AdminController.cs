@@ -14,7 +14,12 @@ namespace KoiFarmManagement.Controllers
         {
             _userService = userService;
         }
-        
+
+        /// <summary>
+        /// Get all users by admin
+        /// </summary>
+        /// <param name="registerObject">The registration details for the new user.</param>
+        /// <returns>A response indicating success or failure of the registration.</returns>
         [HttpGet]
         public async Task<IActionResult> GetAllUsersAdmin([FromQuery] int page = 1, [FromQuery] int pageSize = 5, [FromQuery] string? search = "", [FromQuery] string? sort = "")
         {
