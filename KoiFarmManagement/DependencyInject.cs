@@ -25,6 +25,7 @@ namespace KoiFarmManagement
             });
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IKoiService, KoiService>();
+            services.AddScoped<cIUserService, cUserService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IKoiService, KoiService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

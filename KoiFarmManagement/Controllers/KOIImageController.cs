@@ -25,8 +25,13 @@ namespace KoiFarmManagement.Controllers
             _cloudinary = new Cloudinary(cloudinaryAccount);
             _context = context;
         }
-        //[Authorize(Roles = "Staff,Admin")]
-        [AllowAnonymous]
+        /// <summary>
+        /// Upload image product Admin
+        /// </summary>
+        /// <param name="koiId"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost("{koiId}/images")]
         public async Task<IActionResult> UploadKoiImages(int koiId, [FromForm] List<IFormFile> files)
         {

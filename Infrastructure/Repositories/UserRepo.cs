@@ -41,5 +41,12 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(record => record.Email == email && record.Password == passwordHash);          
             return user;
         }
+
+        public async Task<IEnumerable<User?>> GetAllUsersAdmin()
+        {
+            return await _dbContext.Users
+               .Where(u => u.Role == "Customer")
+               .ToListAsync();
+        }
     }
 }

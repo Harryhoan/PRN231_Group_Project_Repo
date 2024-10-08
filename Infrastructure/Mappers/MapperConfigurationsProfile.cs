@@ -18,6 +18,8 @@ namespace Infrastructure.Mappers
             CreateMap<User, cRegisterDTO>().ReverseMap();
             CreateMap<User, cLoginUserDTO>().ReverseMap();
             CreateMap<Koi, cCreateKOIDTO>().ReverseMap();
+            CreateMap<User, cUserDTO>().ReverseMap();
+            CreateMap<Koi, cKOIDTO>().ReverseMap();
             CreateMap<Category, dCreateCategoryDTO>().ReverseMap();
             //CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
             //      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();

@@ -10,7 +10,8 @@ namespace Application.IRepositories
 {
     public interface IKoiRepo : IGenericRepo<Koi>
     {
-        Task cAddKoi(Koi koi);
+        Task cAddKoi(Koi koi); 
+        Task<IEnumerable<Koi>> GetAllKOI();
         Task<List<Koi>> dGetFilteredKois(dFilterKoiDTO filter);
         Task<Koi?> dGetKoiWithCategory(int id);
 

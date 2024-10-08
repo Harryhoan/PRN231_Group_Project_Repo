@@ -35,6 +35,13 @@ namespace Infrastructure.Repositories
                 throw new Exception("An error occurred while adding the koi.", ex);
             }
         }
+
+        public async Task<IEnumerable<Koi>> GetAllKOI()
+        {
+            return await _dbContext.Kois
+                .Include(p => p.Images)
+                .AsNoTracking()
+                .ToListAsync();
         public async Task<List<Koi>> dGetFilteredKois(dFilterKoiDTO filter)
         {
             try

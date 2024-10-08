@@ -16,10 +16,8 @@ namespace KoiFarmManagement.Controllers
         public KOIController(IKoiService koiService)
         {
             _koiService = koiService;
-        }
-        [AllowAnonymous]
-        //[Authorize(Roles = "Staff,Admin")]      
-        [HttpPost("create")]
+        }       
+        [HttpPost]    
         public async Task<IActionResult> CreateProductAsync(cCreateKOIDTO product)
         {
             var result = await _koiService.cCreateKOIAsync(product);
@@ -40,6 +38,9 @@ namespace KoiFarmManagement.Controllers
             {
                 return BadRequest(result);
             }
+            
+            return Ok(result);
+        }
 
             return Ok(result);
         }

@@ -13,6 +13,6 @@ namespace Application.IRepositories
         Task<User?> cGetByEmailAsync(string sEmail);
         Task<User> cGetUserByConfirmationToken(string token);
         Task<User> cGetUserByEmailAddressAndPasswordHash(string email, string passwordHash);
-
+        Task<IEnumerable<User?>> GetAllUsersAdmin();
     }
 }
