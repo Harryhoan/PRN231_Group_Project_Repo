@@ -14,7 +14,8 @@ namespace Infrastructure
         private readonly ApiContext _apiContext;
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo)
+        private readonly IKoiRepo _koiRepo;
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IKoiRepo koiRepo)
         {
             //if (apiContext == null) throw new ArgumentNullException(nameof(apiContext));
             //if (userRepository == null) throw new ArgumentNullException(nameof(userRepository));
@@ -25,9 +26,11 @@ namespace Infrastructure
             _apiContext = apiContext ?? throw new ArgumentNullException(nameof(apiContext));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _tokenRepo = tokenRepo ?? throw new ArgumentNullException(nameof(tokenRepo));
+            _koiRepo = koiRepo ?? throw new ArgumentNullException(nameof(koiRepo));
         }
 
         public IUserRepo UserRepository => _userRepository;
+        public IKoiRepo KoiRepository => _koiRepo;
 
         public ITokenRepo TokenRepo => _tokenRepo;
 

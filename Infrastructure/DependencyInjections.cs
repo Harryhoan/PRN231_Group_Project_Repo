@@ -23,6 +23,7 @@ namespace Infrastructure
             services.AddScoped<IKoiRepo, KoiRepo>();
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IKoiService, KoiService>();
+            services.AddScoped<cIUserService, cUserService>();
             return services;
         }
     }

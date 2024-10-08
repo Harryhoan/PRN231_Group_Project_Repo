@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.IRepositories
 {
-    public interface IKoiRepo
+    public interface IKoiRepo : IGenericRepo<Koi>
     {
-        Task cAddKoi(Koi koi);
+        Task cAddKoi(Koi koi); 
+        Task<IEnumerable<Koi>> GetAllKOI();
     }
 }

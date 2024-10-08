@@ -1,5 +1,6 @@
 ﻿using Application.IRepositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,14 @@ namespace Infrastructure.Repositories
             {
                 throw new Exception("An error occurred while adding the koi.", ex);
             }
+        }
+
+        public async Task<IEnumerable<Koi>> GetAllKOI()
+        {
+            return await _dbContext.Kois
+                .Include(p => p.Images)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

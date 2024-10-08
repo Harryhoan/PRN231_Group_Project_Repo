@@ -28,7 +28,7 @@ namespace KoiFarmManagement
             services.AddScoped<IKoiRepo, KoiRepo>();
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IKoiService, KoiService>();
-
+            services.AddScoped<cIUserService, cUserService>();
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

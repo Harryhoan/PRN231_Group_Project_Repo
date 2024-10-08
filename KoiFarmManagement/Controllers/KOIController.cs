@@ -16,10 +16,8 @@ namespace KoiFarmManagement.Controllers
         public KOIController(IKoiService koiService)
         {
             _koiService = koiService;
-        }
-        [AllowAnonymous]
-        //[Authorize(Roles = "Staff,Admin")]      
-        [HttpPost]
+        }       
+        [HttpPost]    
         public async Task<IActionResult> CreateProductAsync(cCreateKOIDTO product)
         {
             var result = await _koiService.cCreateKOIAsync(product);
@@ -28,6 +26,20 @@ namespace KoiFarmManagement.Controllers
                 return BadRequest(result);
             }
 
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAllProductsAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 5,
+            [FromQuery] string? search = "", [FromQuery] string? sort = "")
+        {
+            var result = await _koiService.GetAllKoisAsync(page, pageSize, search, sort);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            
             return Ok(result);
         }
     }

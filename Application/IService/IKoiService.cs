@@ -11,6 +11,8 @@ namespace Application.IService
     public interface IKoiService
     {
         Task<ServiceResponse<int>> cCreateKOIAsync(cCreateKOIDTO cproduct);
+        Task<ServiceResponse<PaginationModel<cKOIDTO>>> GetAllKoisAsync(int page, int pageSize, string search, string sort);
+
 
     }
 }

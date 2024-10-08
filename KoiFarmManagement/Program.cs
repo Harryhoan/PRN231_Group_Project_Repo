@@ -122,7 +122,7 @@ namespace KoiFarmManagement
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
                     Scheme = "bearer"
-                });             
+                });              
             });
             var app = builder.Build();
 

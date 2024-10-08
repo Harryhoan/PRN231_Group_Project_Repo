@@ -10,6 +10,7 @@ namespace Application
     public interface IUnitOfWork
     {
         public IUserRepo UserRepository { get; }
+        public IKoiRepo KoiRepository { get; }
         public ITokenRepo TokenRepo { get; }
         public Task<int> SaveChangeAsync();
     }
