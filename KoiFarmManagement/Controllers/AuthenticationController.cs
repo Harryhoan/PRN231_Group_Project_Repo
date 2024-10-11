@@ -1,6 +1,7 @@
 ﻿using Application.IService;
 using Application.ViewModels.UserDTO;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,7 @@ namespace KoiFarmManagement.Controllers
         /// <param name="registerObject">The registration details for the new user.</param>
         /// <returns>A response indicating success or failure of the registration.</returns>
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(cRegisterDTO registerObject)
         {
             var result = await _authenService.cRegisterAsync(registerObject);
@@ -51,6 +53,8 @@ namespace KoiFarmManagement.Controllers
         /// <param name="loginObject">The login details including username and password.</param>
         /// <returns>A response indicating success or failure of the login, along with a token and user role if successful.</returns>
         [HttpPost("login")]
+        [AllowAnonymous]
+
         public async Task<IActionResult> LoginAsync(cLoginUserDTO loginObject)
         {
             var result = await _authenService.cLoginAsync(loginObject);
@@ -80,6 +84,7 @@ namespace KoiFarmManagement.Controllers
         /// <param name="sEmail">The email address to which the confirmation token will be resent.</param>
         /// <returns>A response indicating success or failure of the resend action.</returns>
         [HttpPost("resend")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ReSendConfirm(string sEmail)
         {
             var result = await _authenService.cResendConfirmationTokenAsync(sEmail);
