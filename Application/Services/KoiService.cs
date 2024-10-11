@@ -26,10 +26,10 @@ namespace Application.Services
             _mapper = mapper;
             _koiRepo = koiRepo;
         }
-        private Koi MapToEntityCreate(cCreateKOIDTO CreateProductDTO)
-        {
-            return _mapper.Map<Koi>(CreateProductDTO);
-        }
+        //private Koi MapToEntityCreate(cCreateKOIDTO CreateProductDTO)
+        //{
+        //    return _mapper.Map<Koi>(CreateProductDTO);
+        //}
 
         private Koi MapToEntityFilter(cCreateKOIDTO CreateProductDTO)
         {
@@ -47,7 +47,16 @@ namespace Application.Services
 
             try
             {
-                var newProduct = MapToEntityCreate(cproduct);
+                Koi newProduct = new Koi
+                {
+                    Name = cproduct.Namekoi,
+                    Description = cproduct.Descriptionkoi,
+                    Price = cproduct.Price,
+                    Quantity = cproduct.Quantity,
+                    Size = cproduct.Size,
+                    Dob = cproduct.Dob,
+                    CategoryId = cproduct.Categoryid
+                };
                 newProduct.Id = 0;
 
                 await _unitOfWork.KoiRepo.cAddKoi(newProduct);
