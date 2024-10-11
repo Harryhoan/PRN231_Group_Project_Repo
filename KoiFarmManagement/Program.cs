@@ -20,7 +20,6 @@ using Infrastructure.Repositories;
 using System.IO;
 using System.Linq;
 using System;
-
 namespace KoiFarmManagement
 {
     public class Program
@@ -28,6 +27,7 @@ namespace KoiFarmManagement
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             // Add services to the container.
             var configuration = builder.Configuration;
@@ -87,21 +87,30 @@ namespace KoiFarmManagement
                 options.Cookie.IsEssential = true;
             });
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    IConfiguration config = (IConfiguration)configuration;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+     .AddJwtBearer(options =>
+     {
+         IConfiguration config = (IConfiguration)configuration;
+         options.TokenValidationParameters = new TokenValidationParameters
+         {
+             ValidateIssuer = true,
+             ValidateAudience = true,
+             ValidateLifetime = true,
+             ValidateIssuerSigningKey = true,
 
-                        ValidIssuer = configuration["JWTSection:Issuer"],
-                        ValidAudience = configuration["JWTSection:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))
-                    };
-                });
+             ValidIssuer = configuration["JWTSection:Issuer"],
+             ValidAudience = configuration["JWTSection:Audience"],
+             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))           
+         };
+         options.Events = new JwtBearerEvents
+         {
+             OnAuthenticationFailed = context =>
+             {
+                 var exception = context.Exception;
+                 Console.WriteLine("Token validation failed: " + exception.Message);
+                 return Task.CompletedTask;
+             }
+         };
+     });
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -160,7 +169,6 @@ namespace KoiFarmManagement
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<ConfirmationTokenMiddleware>();
-
             app.MapControllers();
 
             app.Run();
