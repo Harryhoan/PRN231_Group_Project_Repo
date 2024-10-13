@@ -14,6 +14,7 @@ namespace Application
         public ICategoryRepo CategoryRepo { get; }
         public IKoiRepo KoiRepo { get; }
         public IOrderRepo OrderRepository { get; }
+        public IReviewRepo ReviewRepository { get; }
         public Task<int> SaveChangeAsync();
     }
 }
