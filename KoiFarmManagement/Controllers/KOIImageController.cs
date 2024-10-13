@@ -10,6 +10,8 @@ using System;
 
 namespace KoiFarmManagement.Controllers
 {
+    [Authorize(Roles = "Admin")]
+    [ApiController]
     public class KOIImageController :BaseController
     {
         private readonly Cloudinary _cloudinary;

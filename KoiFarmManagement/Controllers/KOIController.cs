@@ -9,7 +9,7 @@ namespace KoiFarmManagement.Controllers
     [EnableCors("Allow")]
     [Route("api/koi")]
     [ApiController]
-    [Authorize(Roles = "Staff,Admin,Customer")]
+    //[Authorize(Roles = "Staff,Admin,Customer")]
     public class KOIController : BaseController
     {
         private readonly IKoiService _koiService;
@@ -23,8 +23,9 @@ namespace KoiFarmManagement.Controllers
         /// </summary>
         /// <param name="registerObject">The registration details for the new user.</param>
         /// <returns>A response indicating success or failure of the registration.</returns>
-        [HttpPost]
+
         [Authorize(Roles = "Admin")]
+        [HttpPost] 
         public async Task<IActionResult> CreateProductAsync(cCreateKOIDTO product)
         {
             var result = await _koiService.cCreateKOIAsync(product);
@@ -63,6 +64,18 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> cGetAllProductsAdmin([FromQuery] int page = 1, [FromQuery] int pageSize = 5,
+          [FromQuery] string? search = "", [FromQuery] string? sort = "")
+        {
+            var result = await _koiService.cGetAllKoisAsync(page, pageSize, search, sort);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
         [AllowAnonymous]
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetKoiById(int id)

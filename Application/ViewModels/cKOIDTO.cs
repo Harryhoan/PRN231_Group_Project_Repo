@@ -8,6 +8,10 @@ namespace Application.ViewModels
         [Required(ErrorMessage = "Product name is required")]
         [StringLength(100, ErrorMessage = "Product name can't be longer than 100 characters")]
         public string NameProduct { get; set; }
+        [Required(ErrorMessage = "Dob is required")]
+        [DataType(DataType.Date, ErrorMessage = "Invalid date format")]
+        [PastDate(ErrorMessage = "Dob cannot be in the future.")]
+        public DateTime Dob { get; set; }
 
         [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
         public string DescriptionProduct { get; set; }
@@ -56,6 +60,26 @@ namespace Application.ViewModels
             }
 
             return ValidationResult.Success;
+        }
+    }
+    public class PastDateAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            if (value is DateTime dateValue)
+            {
+                // Kiểm tra nếu ngày lớn hơn ngày hiện tại
+                if (dateValue.Date > DateTime.Now.Date)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public override string FormatErrorMessage(string name)
+        {
+            return $"{name} cannot be a future date.";
         }
     }
 
