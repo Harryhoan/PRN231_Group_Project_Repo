@@ -23,6 +23,7 @@ namespace KoiFarmManagement.Controllers
         /// </summary>
         /// <param name="registerObject">The registration details for the new user.</param>
         /// <returns>A response indicating success or failure of the registration.</returns>
+
         [Authorize(Roles = "Admin")]
         [HttpPost] 
         public async Task<IActionResult> CreateProductAsync(cCreateKOIDTO product)
