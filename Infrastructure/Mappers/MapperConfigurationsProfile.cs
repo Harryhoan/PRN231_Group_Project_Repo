@@ -1,6 +1,7 @@
 ﻿using Application.ViewModels;
 using Application.ViewModels.CategoryDTO;
 using Application.ViewModels.KoiDTO;
+using Application.ViewModels.OrderDetailDTO;
 using Application.ViewModels.ReviewDTO;
 using Application.ViewModels.UserDTO;
 using AutoMapper;
@@ -26,8 +27,10 @@ namespace Infrastructure.Mappers
             CreateMap<Review, ReviewDTO>().ReverseMap();
             CreateMap<Review, ReviewRequest>().ReverseMap();
             CreateMap<Category, dCreateCategoryDTO>().ReverseMap();
-            //CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
-            //      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
-        }
-    }
+			CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
+			CreateMap<OrderDetail, aViewOrderDetailDTO>().ReverseMap();
+			//CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
+			//      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
+		}
+	}
 }
