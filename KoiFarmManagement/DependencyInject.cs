@@ -28,7 +28,8 @@ namespace KoiFarmManagement
             services.AddScoped<cIUserService, cUserService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IKoiService, KoiService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+			services.AddScoped<IOrderDetailService, OrderDetailService>();
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 

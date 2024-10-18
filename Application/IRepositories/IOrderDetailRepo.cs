@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Application.IRepositories
 {
-	public interface IOrderRepo : IGenericRepo<Order> 
+	public interface IOrderDetailRepo : IGenericRepo<OrderDetail>
 	{
-		Task<Order?> aGetPendingOrderByUserIdAsync(int userId);
+		Task<bool> CheckOrderDetailBelongingToUser(int orderDetaildId, int userId);
 	}
 }

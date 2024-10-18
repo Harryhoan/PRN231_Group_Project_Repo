@@ -33,14 +33,14 @@ namespace Application.Services
             try
             {
                 var review = await _unitOfWork.ReviewRepository.checkIdExist(orderId);
-                if (review == null)
+                if (review == false)
                 {
                     response.Success = false;
                     response.Message = "Order not found";
                     return response;
                 }
                 var existingReviewing = _mapper.Map<Review>(reviewRequest);
-                if (existingReviewing.OrderDetailId != null)
+                if (existingReviewing.OrderDetailId == default)
                 {
                     response.Success = false;
                     response.Message = "Order has already had a review.";
