@@ -134,15 +134,24 @@ namespace Application.Services
             }
             return response;
         }
-        private IEnumerable<cKOIDTO> MapToDTO(IEnumerable<Koi> kois)
+        private List<cKOIDTO> MapToDTO(IEnumerable<Koi> kois)
         {
-            return kois.Select(MapToDTO);
+            return kois.Select(koi => MapToDTO(koi)).ToList();
         }
         private cKOIDTO MapToDTO(Koi koi)
         {
-            var productDTO = _mapper.Map<cKOIDTO>(koi);
-            productDTO.ImageUrls = koi.Images?.Select(pi => pi.ImageUrl).ToList();
-            return productDTO;
+            return new cKOIDTO
+            {
+                Id = koi.Id,
+                NameProduct = koi.Name,
+                Dob = koi.Dob,
+                DescriptionProduct = koi.Description,
+                Price = (double)koi.Price, // Chuyển đổi từ decimal sang double
+                Quantity = koi.Quantity,
+                CategoryId = koi.CategoryId,
+                Size = koi.Size,
+                ImageUrls = koi.Images.Select(i => i.ImageUrl).ToList() // Lấy danh sách URL ảnh
+            };
         }
         public async Task<ServiceResponse<PaginationModel<Koi>>> dGetAllKois(int pageNumber, int pageSize)
         {
