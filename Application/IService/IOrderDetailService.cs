@@ -14,5 +14,6 @@ namespace Application.IService
 	{
 		Task<ServiceResponse<aViewOrderDetailDTO>> aCreateOrderDetailAsync(aCreateOrderDetailDTO cart, User user);
 		Task<User> aGetUserByTokenAsync(ClaimsPrincipal claims);
+		Task<ServiceResponse<bool>> aDeleteOrderDetailAsync(int id, User user);
 	}
 }

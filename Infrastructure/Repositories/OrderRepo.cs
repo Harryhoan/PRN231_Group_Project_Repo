@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
 
 		public async Task<Order?> aGetPendingOrderByUserIdAsync(int userId)
 		{
-			return await _dbContext.Orders.SingleOrDefaultAsync(o => o.UserId == userId && o.OrderStatus == false);
+			return await _dbContext.Orders.Include(o => o.OrderDetails).SingleOrDefaultAsync(o => o.UserId == userId && o.OrderStatus == false);
 		}
 	}
 }

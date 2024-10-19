@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Application.ServiceResponse;
+using Application.ViewModels.OrderDTO;
+using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +11,6 @@ namespace Application.IService
 {
 	public interface IOrderService
 	{
+		Task<ServiceResponse<aOrderDTO>> GetCart(User user);
 	}
 }

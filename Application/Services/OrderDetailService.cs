@@ -32,8 +32,8 @@ namespace Application.Services
 				{
 					throw new ArgumentNullException();
 				}
-				var koi = await _unitOfWork.KoiRepo.GetByIdAsync(cart.KoiId);
-				if (koi == null)
+				var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(cart.KoiId);
+				if (koi == null || koi.Category == null)
 				{
 					throw new ArgumentNullException(nameof(koi));
 				}
@@ -47,9 +47,11 @@ namespace Application.Services
 				orderDetail.OrderId = order.Id;
 				await _unitOfWork.OrderDetailRepository.AddAsync(orderDetail);
 				order.TotalPrice += orderDetail.Price;
-				response.Data = _mapper.Map<aViewOrderDetailDTO>(orderDetail);
+				var viewCart = _mapper.Map<aViewOrderDetailDTO>(orderDetail);
+				viewCart.CategoryName = koi.Category.Name;
+				response.Data = viewCart;
 				response.Success = true;
-				response.Message = "Product created successfully";
+				response.Message = "Cart added successfully";
 			}
 			catch (Exception ex)
 			{
@@ -59,15 +61,15 @@ namespace Application.Services
 			return response;
 		}
 
-		public async Task<bool> aCheckIfTheOrderDetailHasOrderWithUserId(int id, User user)
+		public async Task<bool> aCheckIfTheOrderDetailHasOrderWithUserId(int id, int userId)
 		{
 			try
 			{
-				if (user == null || !(user.Id > 0) || !(id > 0))
+				if (!(userId > 0) || !(id > 0))
 				{
 					return false;
 				}
-				return await _unitOfWork.OrderDetailRepository.CheckOrderDetailBelongingToUser(id, user.Id);
+				return await _unitOfWork.OrderDetailRepository.CheckOrderDetailBelongingToUser(id, userId);
 			}
 			catch
 			{
@@ -81,19 +83,19 @@ namespace Application.Services
 			var response = new ServiceResponse<bool>();
 			try
 			{
-				if (!(await aCheckIfTheOrderDetailHasOrderWithUserId(id, user)))
-				{
-					throw new ArgumentException();
-				}
 				var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
 				if (orderDetail == null)
 				{
 					throw new ArgumentNullException(nameof(orderDetail));
 				}
+				if (!(await aCheckIfTheOrderDetailHasOrderWithUserId(id, user.Id)))
+				{
+					throw new UnauthorizedAccessException();
+				}
 				await _unitOfWork.OrderDetailRepository.cDeleteTokenAsync(orderDetail);
 				response.Data = true;
 				response.Success = true;
-				response.Message = "Product created successfully";
+				response.Message = "Cart deleted successfully";
 			}
 			catch (Exception ex)
 			{
