@@ -12,5 +12,8 @@ namespace Application.IService
     public interface IReviewService
     {
         Task<ServiceResponse<ReviewDTO>> ReviewAsync(int orderId, ReviewRequest reviewRequest);
+        Task<ServiceResponse<ReviewDTO>> GetReviewAsync(int reviewId);
+        Task<ServiceResponse<ReviewDTO>> DeleteReviewAsync(int reviewId);
+        Task<ServiceResponse<List<ReviewDTO>>> GetAllReviewAsync();
     }
 }
