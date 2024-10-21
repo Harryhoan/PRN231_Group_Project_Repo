@@ -135,6 +135,11 @@ namespace Application.Services
             }
             return response;
         }
+        private cGetKoiByIdAdmin MapToCUpdate(Koi product)
+        {
+            var productDTO = _mapper.Map<cGetKoiByIdAdmin>(product);
+            return productDTO;
+        }
         private List<cKOIDTO> MapToDTO(IEnumerable<Koi> kois)
         {
             return kois.Select(koi => MapToDTO(koi)).ToList();
@@ -278,6 +283,32 @@ namespace Application.Services
             existingProduct.Dob = productDTO.Dob;
         }
 
-      
+        public async Task<ServiceResponse<cGetKoiByIdAdmin>> cGetKoibyAdmin(int id)
+        {
+            var response = new ServiceResponse<cGetKoiByIdAdmin>();
+
+            try
+            {
+                var product = await _koiRepo.cGetProductNotImage(id);
+                if (product == null)
+                {
+                    response.Success = false;
+                    response.Message = "Product not found";
+                }
+                else
+                {
+                    var productDTO = MapToCUpdate(product);
+                    response.Data = productDTO;
+                    response.Success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to retrieve product: {ex.Message}";
+            }
+
+            return response;
+        }
     }
 }

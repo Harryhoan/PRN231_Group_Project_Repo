@@ -99,6 +99,18 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> cGetKoiByIdAdminNotImage(int id)
+        {
+            var result = await _koiService.cGetKoibyAdmin(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
 
     }
 }
