@@ -23,8 +23,7 @@ namespace KoiFarmManagement.Controllers
         /// </summary>
         /// <param name="registerObject">The registration details for the new user.</param>
         /// <returns>A response indicating success or failure of the registration.</returns>
-
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost] 
         public async Task<IActionResult> CreateProductAsync(cCreateKOIDTO product)
         {
@@ -32,6 +31,18 @@ namespace KoiFarmManagement.Controllers
             if (!result.Success)
             {
                 return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+        //[Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> cUpdateProductAsync(int id, cUpdateProductDTO product)
+        {
+            var result = await _koiService.cUpdateProductAsync(product);
+            if (!result.Success)
+            {
+                return NotFound(result);
             }
 
             return Ok(result);

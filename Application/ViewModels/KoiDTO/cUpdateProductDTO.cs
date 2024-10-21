@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels.KoiDTO
 {
-    public class cCreateKOIDTO
+    public class cUpdateProductDTO
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Size is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Size must be a positive integer")]
         public int Size { get; set; }
@@ -20,13 +21,13 @@ namespace Application.ViewModels.KoiDTO
         public string Descriptionkoi { get; set; }
         [Required(ErrorMessage = "Price is required")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be a positive  number")]
-        public decimal Price { get; set; }       
+        public decimal Price { get; set; }
         [Required(ErrorMessage = "Product name is required")]
         [StringLength(100, ErrorMessage = "Product name can't be longer than 100 characters")]
-        public string Namekoi { get; set; }           
+        public string Namekoi { get; set; }
         [Required(ErrorMessage = "Quantity is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be a positive integer")]
-        public int Quantity { get; set; }          
+        public int Quantity { get; set; }
         [Required(ErrorMessage = "Category ID is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Category ID must be a positive integer")]
         public int Categoryid { get; set; }

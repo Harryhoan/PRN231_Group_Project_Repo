@@ -112,5 +112,38 @@ namespace Infrastructure.Repositories
         {
             return await _dbContext.Kois.Include(record => record.Category).SingleOrDefaultAsync(record => record.Id == id);
         }
+
+        public async Task<Koi> cGetProductById(int id)
+        {
+            var product = await _dbContext.Kois
+                 .Include(p => p.Images)
+                 .AsNoTracking()
+                 .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+            {
+                throw new KeyNotFoundException($"Product with id {id} not found.");
+            }
+
+            return product;
+        }
+
+        public async Task cUpdateProduct(Koi product)
+        {
+            try
+            {
+                if (product == null)
+                {
+                    throw new ArgumentNullException(nameof(product));
+                }
+
+                _dbContext.Entry(product).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the product.", ex);
+            }
+        }
     }
 }
