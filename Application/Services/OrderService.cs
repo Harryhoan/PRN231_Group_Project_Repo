@@ -60,7 +60,6 @@ namespace Application.Services
         public async Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user)
         {
             var response = new ServiceResponse<List<aOrderDTO>>();
-
             try
             {
                 var orders = await _unitOfWork.OrderRepository.aGetOrdersByUser(user.Id);
