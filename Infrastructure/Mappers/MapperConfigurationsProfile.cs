@@ -7,7 +7,6 @@ using Application.ViewModels.ReviewDTO;
 using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +25,6 @@ namespace Infrastructure.Mappers
             CreateMap<User, cUserDTO>().ReverseMap();
             CreateMap<Koi, cKOIDTO>().ReverseMap();
             CreateMap<Review, ReviewDTO>().ReverseMap();
-            CreateMap<Review, ReviewRequest>().ReverseMap();
             CreateMap<Category, dCreateCategoryDTO>().ReverseMap();
             CreateMap<Koi, cUpdateProductDTO>().ReverseMap();
 CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
@@ -36,6 +34,9 @@ CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
 			CreateMap<Order, aOrderDTO>()
 				.ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
 			CreateMap<OrderDetail, aViewOrderDetailDTO>();
+            CreateMap<aEditReviewDTO, Review>().ReverseMap();
+            CreateMap<aViewCategory, Category>().ReverseMap();
+            CreateMap<Review, ReviewRequestDTO>().ReverseMap();
             //CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
             //      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
         }

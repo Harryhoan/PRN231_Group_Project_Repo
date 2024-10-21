@@ -54,7 +54,7 @@ namespace KoiFarmManagement.Controllers
 
 
         [Authorize(Roles = "Customer")]
-		[HttpPost]
+		[HttpPost("addtocart")]
 		public async Task<IActionResult> AddToCart(aCreateOrderDetailDTO cart)
 		{
 			var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
@@ -70,7 +70,7 @@ namespace KoiFarmManagement.Controllers
 			return Ok(result);
 		}
 
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Customer")]
 		[HttpDelete]
 		public async Task<IActionResult> DeleteCart(int id)
 		{

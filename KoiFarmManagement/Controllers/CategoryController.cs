@@ -37,5 +37,19 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Staff,Admin")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(aViewCategory category)
+        {
+            var result = await _categoryService.aUpdateCategory(category);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
+
     }
 }

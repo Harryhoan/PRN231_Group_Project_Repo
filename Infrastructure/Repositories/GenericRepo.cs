@@ -47,9 +47,10 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Update(T entity)
+        public async Task Update(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
         }
 
         public void UpdateE(T entity)
