@@ -9,7 +9,7 @@ namespace KoiFarmManagement.Controllers
     [EnableCors("Allow")]
     [Route("api/koi")]
     [ApiController]
-    //[Authorize(Roles = "Staff,Admin,Customer")]
+    [Authorize(Roles = "Staff,Admin,Customer")]
     public class KOIController : BaseController
     {
         private readonly IKoiService _koiService;
@@ -35,7 +35,7 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> cUpdateProductAsync(int id, cUpdateProductDTO product)
         {
