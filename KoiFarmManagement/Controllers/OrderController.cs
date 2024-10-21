@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KoiFarmManagement.Controllers
 {
-	public class OrderController : Controller
+    [ApiController]
+    public class OrderController : Controller
 	{
 		private readonly IOrderDetailService _orderDetailService;
 		private readonly IOrderService _orderService;
@@ -18,8 +19,8 @@ namespace KoiFarmManagement.Controllers
 		}
 
 		[Authorize(Roles = "Customer")]
-		[HttpGet]
-		public async Task<IActionResult> GetCart(aCreateOrderDetailDTO cart)
+		[HttpGet("/cart")]
+		public async Task<IActionResult> GetCart()
 		{
 			var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
 			if (user == null)
@@ -34,8 +35,25 @@ namespace KoiFarmManagement.Controllers
 			return Ok(result);
 		}
 
+        [Authorize(Roles = "Customer")]
+        [HttpGet("/history")]
+        public async Task<IActionResult> GetOrderHistory()
+        {
+            var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var result = await _orderService.GetOrdersByUser(user);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
-		[Authorize(Roles = "Customer")]
+
+        [Authorize(Roles = "Customer")]
 		[HttpPost]
 		public async Task<IActionResult> AddToCart(aCreateOrderDetailDTO cart)
 		{

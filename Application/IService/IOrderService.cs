@@ -12,5 +12,7 @@ namespace Application.IService
 	public interface IOrderService
 	{
 		Task<ServiceResponse<aOrderDTO>> GetCart(User user);
-	}
+		Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user);
+
+    }
 }
