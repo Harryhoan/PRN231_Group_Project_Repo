@@ -68,6 +68,5 @@ namespace KoiFarmManagement.Controllers
 			}
 			return Ok(result);
 		}
-
 	}
 }
