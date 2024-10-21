@@ -9,17 +9,16 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-	public class OrderRepo : GenericRepo<Order>, IOrderRepo
+	public class OrderDetailRepo : GenericRepo<OrderDetail>, IOrderDetailRepo
 	{
 		private readonly ApiContext _dbContext;
-		public OrderRepo(ApiContext dbContext) : base(dbContext)
+		public OrderDetailRepo(ApiContext dbContext) : base(dbContext)
 		{
 			_dbContext = dbContext;
 		}
-
-		public async Task<Order?> aGetPendingOrderByUserIdAsync(int userId)
+		public async Task<bool> CheckOrderDetailBelongingToUser(int orderDetaildId, int userId)
 		{
-			return await _dbContext.Orders.Include(o => o.OrderDetails).SingleOrDefaultAsync(o => o.UserId == userId && o.OrderStatus == false);
+			return await _dbContext.OrderDetails.AnyAsync(o => o.Id == orderDetaildId && o.Order.UserId == userId);
 		}
 	}
 }

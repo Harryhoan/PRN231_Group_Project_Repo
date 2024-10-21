@@ -27,8 +27,9 @@ namespace Infrastructure
             services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<ICategoryRepo, CategoryRepo>();
 			services.AddScoped<IOrderRepo, OrderRepo>();
-
-
+            services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IReviewRepo, ReviewRepo>();
+            services.AddScoped<IOrderDetailRepo, OrderDetailRepo>();
             return services;
         }
     }
