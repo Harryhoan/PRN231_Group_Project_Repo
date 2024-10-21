@@ -137,8 +137,17 @@ namespace Application.Services
         }
         private cGetKoiByIdAdmin MapToCUpdate(Koi product)
         {
-            var productDTO = _mapper.Map<cGetKoiByIdAdmin>(product);
-            return productDTO;
+            return new cGetKoiByIdAdmin
+            {
+                Id = product.Id,
+                Size = product.Size,
+                Dob = product.Dob,
+                Description = product.Description,
+                Price = product.Price,
+                Name = product.Name,  // Manual mapping for Name to Namekoi
+                Quantity = product.Quantity,
+                Categoryid = product.CategoryId
+            };
         }
         private List<cKOIDTO> MapToDTO(IEnumerable<Koi> kois)
         {
