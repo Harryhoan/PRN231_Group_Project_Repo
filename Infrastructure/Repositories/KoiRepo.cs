@@ -145,5 +145,18 @@ namespace Infrastructure.Repositories
                 throw new Exception("An error occurred while updating the product.", ex);
             }
         }
+
+        public async Task<Koi> cGetProductNotImage(int id)
+        {
+            var product = await _dbContext.Kois               
+               .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+            {
+                throw new KeyNotFoundException($"Product with id {id} not found.");
+            }
+
+            return product;
+        }
     }
 }

@@ -114,16 +114,19 @@ namespace KoiFarmManagement.Controllers
             return Ok(new { imageUrl = productImage.ImageUrl });
         }
         [AllowAnonymous]
+        [HttpGet("images/{imageId}")]
         public async Task<Image> GetImageInforById(int id)
         {
             return await _context.Images.FindAsync(id);
         }
         [AllowAnonymous]
+        [HttpGet("images")]
         public async Task<IEnumerable<Image>> GetAllImageInfors()
         {
             return _context.Images.ToList();
         }
         [Authorize(Roles = "Admin")]
+        [HttpDelete("images/{imageId}")]
         public async Task DeleteProductImage(int id)
         {
             var iproduct = await _context.Images.FindAsync(id);

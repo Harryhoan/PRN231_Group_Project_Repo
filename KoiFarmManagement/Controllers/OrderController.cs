@@ -3,10 +3,13 @@ using Application.Services;
 using Application.ViewModels.OrderDetailDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KoiFarmManagement.Controllers
 {
+    [EnableCors("Allow")]
+    [Route("api/[controller]")]
     [ApiController]
     public class OrderController : Controller
 	{
