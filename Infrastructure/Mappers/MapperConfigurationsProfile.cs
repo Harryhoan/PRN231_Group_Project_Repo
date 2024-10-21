@@ -22,6 +22,8 @@ namespace Infrastructure.Mappers
             CreateMap<User, cUserDTO>().ReverseMap();
             CreateMap<Koi, cKOIDTO>().ReverseMap();
             CreateMap<Category, dCreateCategoryDTO>().ReverseMap();
+            CreateMap<Koi, cUpdateProductDTO>().ReverseMap();
+
             //CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
             //      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
         }

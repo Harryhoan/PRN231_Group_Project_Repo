@@ -9,6 +9,7 @@ using Domain.Entities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -134,15 +135,24 @@ namespace Application.Services
             }
             return response;
         }
-        private IEnumerable<cKOIDTO> MapToDTO(IEnumerable<Koi> kois)
+        private List<cKOIDTO> MapToDTO(IEnumerable<Koi> kois)
         {
-            return kois.Select(MapToDTO);
+            return kois.Select(koi => MapToDTO(koi)).ToList();
         }
         private cKOIDTO MapToDTO(Koi koi)
         {
-            var productDTO = _mapper.Map<cKOIDTO>(koi);
-            productDTO.ImageUrls = koi.Images?.Select(pi => pi.ImageUrl).ToList();
-            return productDTO;
+            return new cKOIDTO
+            {
+                Id = koi.Id,
+                NameProduct = koi.Name,
+                Dob = koi.Dob,
+                DescriptionProduct = koi.Description,
+                Price = (double)koi.Price, // Chuyển đổi từ decimal sang double
+                Quantity = koi.Quantity,
+                CategoryId = koi.CategoryId,
+                Size = koi.Size,
+                ImageUrls = koi.Images.Select(i => i.ImageUrl).ToList() // Lấy danh sách URL ảnh
+            };
         }
         public async Task<ServiceResponse<PaginationModel<Koi>>> dGetAllKois(int pageNumber, int pageSize)
         {
@@ -214,7 +224,60 @@ namespace Application.Services
             }
             return response;
         }
-    
-       
+
+        public async Task<ServiceResponse<string>> cUpdateProductAsync(cUpdateProductDTO cproduct)
+        {
+            var response = new ServiceResponse<string>();
+
+            try
+            {
+                // Validate the product DTO
+                var validationContext = new ValidationContext(cproduct);
+                var validationResults = new List<ValidationResult>();
+                if (!Validator.TryValidateObject(cproduct, validationContext, validationResults, true))
+                {
+                    var errorMessages = validationResults.Select(r => r.ErrorMessage);
+                    response.Success = false;
+                    response.Message = string.Join("; ", errorMessages);
+                    return response;
+                }
+
+                // Retrieve the existing product from the repository
+                var existingProduct = await _koiRepo.cGetProductById(cproduct.Id);
+                if (existingProduct == null)
+                {
+                    response.Success = false;
+                    response.Message = "Product not found";
+                    return response;
+                }
+
+                // Map updated values from DTO to the existing entity
+                MapCreateProductDTOToEntity(cproduct, existingProduct);
+
+                // Update the product in the repository
+                await _koiRepo.cUpdateProduct(existingProduct);   
+                response.Data = "Product updated successfully";
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to update product: {ex.Message}";
+            }
+
+            return response;
+        }
+        private void MapCreateProductDTOToEntity(cUpdateProductDTO productDTO, Koi existingProduct)
+        {
+            existingProduct.Name = productDTO.Namekoi;
+            existingProduct.Description = productDTO.Descriptionkoi;
+            existingProduct.Price = productDTO.Price;
+            existingProduct.Quantity = productDTO.Quantity;
+            existingProduct.CategoryId = productDTO.Categoryid;
+            existingProduct.Size = productDTO.Size;
+            existingProduct.Dob = productDTO.Dob;
+        }
+
+      
     }
 }
