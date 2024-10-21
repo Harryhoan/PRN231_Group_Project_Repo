@@ -4,7 +4,6 @@ using Application.ServiceResponse;
 using Application.ViewModels.ReviewDTO;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +14,11 @@ namespace Application.Services
 {
     public class ReviewService : IReviewService
     {
-        private readonly IReviewRepo _reviewRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ReviewService(IReviewRepo reviewRepo, IMapper mapper, IUnitOfWork unitOfWork)
+        public ReviewService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _reviewRepo = reviewRepo;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
@@ -51,6 +48,53 @@ namespace Application.Services
                 return response;
             }
         }
+
+        public async Task<ServiceResponse<ReviewDTO>> aEditReviewAsync(aEditReviewDTO review, User user)
+        {
+            var response = new ServiceResponse<ReviewDTO>();
+
+            try
+            {
+                if (user == null || !(user.Id > 0) || review == null)
+                {
+                    throw new ArgumentException();
+                }
+                var existingReview = await _unitOfWork.ReviewRepository.GetByIdAsync(review.Id);
+                if (existingReview == null)
+                {
+                    response.Success = false;
+                    response.Message = "Review not found";
+                    return response;
+                }
+                var existingOrderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(existingReview.Id);
+                if (existingReview == null)
+                {
+                    response.Success = false;
+                    response.Message = "Order detail not found";
+                    return response;
+                }
+                if (user.Role == "Customer" && !(await _unitOfWork.OrderDetailRepository.CheckOrderDetailBelongingToUser(existingReview.Id, user.Id)))
+                {
+                    response.Success = false;
+                    response.Message = "Unauthorized modification";
+                    return response;
+                }
+                existingReview.Comment = review.Comment;
+                existingReview.Rating = review.Rating;
+                await _unitOfWork.ReviewRepository.Update(existingReview);
+                response.Data = _mapper.Map<ReviewDTO>(existingReview);
+                response.Success = true;
+                response.Message = "Review found successfully";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to update review: {ex.Message}";
+                return response;
+            }
+        }
+
 
         public async Task<ServiceResponse<List<ReviewDTO>>> GetAllReviewAsync()
         {
@@ -102,7 +146,7 @@ namespace Application.Services
                 return response;
             }
         }
-        public async Task<ServiceResponse<ReviewDTO>> ReviewAsync(int orderId, ReviewRequest reviewRequest)
+        public async Task<ServiceResponse<ReviewDTO>> ReviewAsync(int orderId, ReviewRequestDTO reviewRequest)
         {
             var response = new ServiceResponse<ReviewDTO>();
 
