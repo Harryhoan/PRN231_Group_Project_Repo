@@ -15,6 +15,7 @@ namespace Application.IRepositories
         Task<List<Koi>> dGetFilteredKois(dFilterKoiDTO filter);
         Task<Koi?> dGetKoiWithCategory(int id);
         Task<Koi> cGetProductById(int id);
+        Task<Koi> cGetProductNotImage(int id);
         Task cUpdateProduct(Koi product);
 
     }

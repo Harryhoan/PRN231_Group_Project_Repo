@@ -18,6 +18,7 @@ namespace Application.IService
         Task<ServiceResponse<PaginationModel<Koi>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter);
         Task<ServiceResponse<PaginationModel<Koi>>> dGetAllKois(int pageNumber, int pageSize);
         Task<ServiceResponse<dViewKoiDTO>> dGetKOIById(int id);
+        Task<ServiceResponse<cGetKoiByIdAdmin>> cGetKoibyAdmin(int id);
         Task<ServiceResponse<string>> cUpdateProductAsync(cUpdateProductDTO cproduct);
 
     }

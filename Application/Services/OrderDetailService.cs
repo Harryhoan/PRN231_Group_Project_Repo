@@ -37,11 +37,17 @@ namespace Application.Services
 				{
 					throw new ArgumentNullException(nameof(koi));
 				}
+				if (!(koi.Quantity > 0))
+				{
+					throw new InvalidOperationException();
+				}
 				var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
 				if (order == null)
 				{
 					throw new ArgumentNullException(nameof(order));
 				}
+				koi.Quantity = 0;
+				await _unitOfWork.KoiRepo.Update(koi);
 				var orderDetail = _mapper.Map<OrderDetail>(cart);
 				orderDetail.Price = koi.Price * orderDetail.Quantity;
 				orderDetail.OrderId = order.Id;
