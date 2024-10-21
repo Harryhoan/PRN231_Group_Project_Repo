@@ -113,7 +113,15 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(new { imageUrl = productImage.ImageUrl });
         }
+        public async Task<Image> GetImageInforById(int id)
+        {
+            return await _context.Images.FindAsync(id);
+        }
 
+        public async Task<IEnumerable<Image>> GetAllImageInfors()
+        {
+            return _context.Images.ToList();
+        }
 
 
 
