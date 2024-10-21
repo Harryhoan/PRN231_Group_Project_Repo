@@ -12,9 +12,9 @@ namespace Application.ViewModels.KoiDTO
         public int Id { get; set; }       
         public int Size { get; set; }
         public DateTime Dob { get; set; }
-        public string Descriptionkoi { get; set; }
+        public string Description { get; set; }
         public decimal Price { get; set; }
-        public string Namekoi { get; set; }
+        public string Name { get; set; }
         public int Quantity { get; set; }
         public int Categoryid { get; set; }
     }
