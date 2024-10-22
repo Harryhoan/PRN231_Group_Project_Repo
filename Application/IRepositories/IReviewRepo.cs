@@ -10,5 +10,7 @@ namespace Application.IRepositories
     public interface IReviewRepo : IGenericRepo<Review>
     {
         Task<bool> checkIdExist(int id);
+        Task<List<Review>> GetReviewsByUserIdAsync(int userId);
+        Task<Review?> GetReviewByOrderDetailAsync(int orderDetailId);
     }
 }
