@@ -86,31 +86,41 @@ namespace KoiFarmManagement
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-     .AddJwtBearer(options =>
-     {
-         IConfiguration config = (IConfiguration)configuration;
-         options.TokenValidationParameters = new TokenValidationParameters
-         {
-             ValidateIssuer = true,
-             ValidateAudience = true,
-             ValidateLifetime = true,
-             ValidateIssuerSigningKey = true,
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+   .AddJwtBearer(options =>
+   {
+       IConfiguration config = builder.Configuration; // Correct way to access the configuration
+       options.TokenValidationParameters = new TokenValidationParameters
+       {
+           ValidateIssuer = true,
+           ValidateAudience = true,
+           ValidateLifetime = true,
+           ValidateIssuerSigningKey = true,
 
-             ValidIssuer = configuration["JWTSection:Issuer"],
-             ValidAudience = configuration["JWTSection:Audience"],
-             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))           
-         };
-         options.Events = new JwtBearerEvents
-         {
-             OnAuthenticationFailed = context =>
-             {
-                 var exception = context.Exception;
-                 Console.WriteLine("Token validation failed: " + exception.Message);
-                 return Task.CompletedTask;
-             }
-         };
-     });
+           ValidIssuer = config["JWTSection:Issuer"],
+           ValidAudience = config["JWTSection:Audience"],
+           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))
+       };
+       options.Events = new JwtBearerEvents
+       {
+           OnAuthenticationFailed = context =>
+           {
+               var exception = context.Exception;
+               Console.WriteLine("Token validation failed: " + exception.Message);
+               return Task.CompletedTask;
+           }
+       };
+   })
+   .AddGoogle(options =>
+   {
+       IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+       options.ClientId = googleAuthNSection["ClientId"];
+       options.ClientSecret = googleAuthNSection["ClientSecret"];
+   });
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -164,6 +174,7 @@ namespace KoiFarmManagement
                 c.SwaggerEndpoint("swagger/v1/swagger.json", "KoiFarmShopApI v1");
                 c.RoutePrefix = string.Empty;
             });
+
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
             app.UseAuthentication();

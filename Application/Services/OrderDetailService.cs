@@ -99,10 +99,16 @@ namespace Application.Services
 				{
 					throw new ArgumentNullException(nameof(orderDetail));
 				}
-				if (!(await aCheckIfTheOrderDetailHasOrderWithUserId(id, user.Id)))
+				var existingOrder = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
+				if (existingOrder == null || orderDetail.Id != existingOrder.Id)
 				{
-					throw new UnauthorizedAccessException();
-				}
+                    response.Success = false;
+                    response.Message = "Cannot delete order detail";
+                }
+    //            if (!(await aCheckIfTheOrderDetailHasOrderWithUserId(id, user.Id)))
+				//{
+				//	throw new UnauthorizedAccessException();
+				//}
 				await _unitOfWork.OrderDetailRepository.cDeleteTokenAsync(orderDetail);
 				response.Data = true;
 				response.Success = true;
