@@ -39,15 +39,20 @@ namespace Application.Services
 				}
 				if (!(koi.Quantity > 0))
 				{
-					throw new InvalidOperationException();
-				}
-				var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
-				if (order == null)
+                    response.Success = false;
+                    response.Message = "There is no more koi to add to cart";
+                }
+                var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
+				if (order == null || order.OrderDetails == null)
 				{
 					throw new ArgumentNullException(nameof(order));
 				}
-				koi.Quantity = 0;
-				await _unitOfWork.KoiRepo.Update(koi);
+				if (order.OrderDetails.Any(o => o.KoiId == koi.Id))
+				{
+                    response.Success = false;
+                    response.Message = "The cart already has this koi";
+                }
+                await _unitOfWork.KoiRepo.Update(koi);
 				var orderDetail = _mapper.Map<OrderDetail>(cart);
 				orderDetail.Price = koi.Price * orderDetail.Quantity;
 				orderDetail.OrderId = order.Id;
