@@ -12,6 +12,6 @@ namespace Application.IService
     {
         Task<ServiceResponse<int>> dCreateCategory(dCreateCategoryDTO createCategoryDTO);
         Task<ServiceResponse<string>> aUpdateCategory(aViewCategory cat);
-
+        Task<ServiceResponse<List<dCreateCategoryDTO>>> dGetAllCategory();
     }
 }

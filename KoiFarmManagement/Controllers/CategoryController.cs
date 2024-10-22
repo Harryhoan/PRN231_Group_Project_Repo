@@ -23,8 +23,7 @@ namespace KoiFarmManagement.Controllers
         {
             _categoryService = categoryService;
         }
-        [AllowAnonymous]
-        //[Authorize(Roles = "Staff,Admin")]
+        [Authorize(Roles = "Staff,Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCategory(dCreateCategoryDTO category)
         {
@@ -36,6 +35,20 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _categoryService.dGetAllCategory();
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
 
         [Authorize(Roles = "Staff,Admin")]
         [HttpPut]
