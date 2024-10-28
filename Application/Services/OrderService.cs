@@ -128,7 +128,41 @@ namespace Application.Services
             return response;
         }
 
-        public async Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user)
+		public async Task<ServiceResponse<List<aOrderDTO>>> GetAllOrders()
+        {
+			var response = new ServiceResponse<List<aOrderDTO>>();
+			try
+			{
+				var orders = await _unitOfWork.OrderRepository.GetAllAsync();
+				if (orders == null)
+				{
+					throw new ArgumentNullException(nameof(orders));
+				}
+				var viewOrders = _mapper.Map<List<aOrderDTO>>(orders);
+				foreach (var order in viewOrders)
+				{
+					foreach (var orderDetail in order.OrderDetails)
+					{
+						var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(orderDetail.KoiId);
+						if (koi == null || koi.Category == null)
+						{
+							throw new ArgumentException();
+						}
+						orderDetail.CategoryName = koi.Category.Name;
+					}
+				}
+				response.Data = viewOrders;
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = $"Failed to get cart: {ex.Message}";
+			}
+			return response;
+		}
+
+		public async Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user)
         {
             var response = new ServiceResponse<List<aOrderDTO>>();
             try
