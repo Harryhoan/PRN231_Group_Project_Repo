@@ -111,6 +111,20 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
+        /// <summary>
+        /// delete product for admin
+        /// </summary>    
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> cDeleteProductAsync(int id)
+        {
+            var result = await _koiService.DeleteProductAsync(id);
+            if (!result.Success)
+            {
+                return NotFound(result);
+            }
 
+            return Ok(result);
+        }
     }
 }

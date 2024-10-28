@@ -158,5 +158,24 @@ namespace Infrastructure.Repositories
 
             return product;
         }
+
+        public async Task cDeleteProduct(int id)
+        {
+            try
+            {
+                var product = await _dbContext.Kois.FindAsync(id);
+                if (product == null)
+                {
+                    throw new KeyNotFoundException($"Product with id {id} not found.");
+                }
+
+                _dbContext.Kois.Remove(product);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleting the product.", ex);
+            }
+        }
     }
 }

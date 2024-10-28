@@ -20,6 +20,7 @@ namespace Application.IService
         Task<ServiceResponse<dViewKoiDTO>> dGetKOIById(int id);
         Task<ServiceResponse<cGetKoiByIdAdmin>> cGetKoibyAdmin(int id);
         Task<ServiceResponse<string>> cUpdateProductAsync(cUpdateProductDTO cproduct);
+        Task<ServiceResponse<string>> cDeleteProductAsync(int id);
 
     }
 }
