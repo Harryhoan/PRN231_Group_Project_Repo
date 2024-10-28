@@ -13,6 +13,7 @@ namespace Application.IService
 	{
 		Task<ServiceResponse<aOrderDTO>> GetCart(User user);
 		Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user);
+		Task<ServiceResponse<List<aOrderDTO>>> GetAllOrders();
 
-    }
+	}
 }

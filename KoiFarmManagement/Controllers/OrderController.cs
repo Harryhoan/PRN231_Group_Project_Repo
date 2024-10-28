@@ -55,8 +55,20 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
+		[Authorize(Roles = "Admin")]
+		[HttpGet("/admin/all")]
+		public async Task<IActionResult> GetOrders()
+		{
+			var result = await _orderService.GetAllOrders();
+			if (!result.Success)
+			{
+				return BadRequest(result);
+			}
+			return Ok(result);
+		}
 
-        [Authorize(Roles = "Customer")]
+
+		[Authorize(Roles = "Customer")]
 		[HttpPost("addtocart")]
 		public async Task<IActionResult> AddToCart(aCreateOrderDetailDTO cart)
 		{
