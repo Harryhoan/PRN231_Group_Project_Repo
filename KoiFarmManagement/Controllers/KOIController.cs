@@ -118,7 +118,7 @@ namespace KoiFarmManagement.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> cDeleteProductAsync(int id)
         {
-            var result = await _koiService.DeleteProductAsync(id);
+            var result = await _koiService.cDeleteProductAsync(id);
             if (!result.Success)
             {
                 return NotFound(result);
