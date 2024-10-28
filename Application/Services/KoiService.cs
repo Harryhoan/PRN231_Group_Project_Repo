@@ -319,5 +319,33 @@ namespace Application.Services
 
             return response;
         }
+
+        public async Task<ServiceResponse<string>> cDeleteProductAsync(int id)
+        {
+            var response = new ServiceResponse<string>();
+
+            try
+            {
+                var existingProduct = await _koiRepo.cGetProductById(id);
+                if (existingProduct == null)
+                {
+                    response.Success = false;
+                    response.Message = "Product not found";
+                }
+                else
+                {
+                    await _koiRepo.DeleteProduct(id);
+                    response.Data = "Product deleted successfully";
+                    response.Success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to delete product: {ex.Message}";
+            }
+
+            return response;
+        }
     }
 }
