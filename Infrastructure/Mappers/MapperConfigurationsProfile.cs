@@ -37,6 +37,11 @@ CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
 			CreateMap<Order, aOrderDTO>()
 				.ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
 			CreateMap<OrderDetail, aViewOrderDetailDTO>();
+            CreateMap<Order, cOrderDTO>()
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!.FullName))
+               .ReverseMap();
+            CreateMap<OrderDetail, cOrderDetailsResDTO>().ReverseMap();
+
             //CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
             //      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
         }

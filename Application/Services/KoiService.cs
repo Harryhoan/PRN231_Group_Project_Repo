@@ -334,7 +334,7 @@ namespace Application.Services
                 }
                 else
                 {
-                    await _koiRepo.DeleteProduct(id);
+                    await _koiRepo.cDeleteProduct(id);
                     response.Data = "Product deleted successfully";
                     response.Success = true;
                 }

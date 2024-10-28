@@ -12,5 +12,7 @@ namespace Application.IService
 	public interface IOrderService
 	{
 		Task<ServiceResponse<aOrderDTO>> GetCart(User user);
-	}
+        Task<ServiceResponse<PaginationModel<cOrderDTO>>> cGetAllOrder(int page, int pageSize, string search, string filter, string sort);
+
+    }
 }
