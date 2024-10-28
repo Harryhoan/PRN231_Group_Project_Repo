@@ -13,6 +13,7 @@ namespace Application.IService
 	{
 		Task<ServiceResponse<aOrderDTO>> GetCart(User user);
 		Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user);
+        Task<ServiceResponse<PaginationModel<cOrderDTO>>> cGetAllOrder(int page, int pageSize, string search, string filter, string sort);
 
     }
 }

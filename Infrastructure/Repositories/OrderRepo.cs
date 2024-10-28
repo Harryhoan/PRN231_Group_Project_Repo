@@ -27,5 +27,10 @@ namespace Infrastructure.Repositories
             return await _dbContext.Orders.Include(o => o.OrderDetails).Where(o => o.UserId == userId).ToListAsync();
         }
 
+        public async Task<IEnumerable<Order>> cGetAllOrders()
+        {
+            var orders = await _dbContext.Orders.Include(o => o.User).Include(o => o.OrderDetails).ToListAsync();
+            return orders;
+        }
     }
 }

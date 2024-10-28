@@ -11,6 +11,7 @@ namespace Application.IRepositories
 	{
 		Task<Order?> aGetPendingOrderByUserIdAsync(int userId);
 		Task<List<Order>> aGetOrdersByUser(int userId);
+        Task<IEnumerable<Order>> cGetAllOrders();
 
     }
 }
