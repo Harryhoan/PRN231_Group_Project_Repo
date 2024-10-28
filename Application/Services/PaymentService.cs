@@ -3,8 +3,10 @@ using Application.ServiceResponse;
 using Application.Utils;
 using Application.ViewModels.OrderDTO;
 using AutoMapper;
+using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using PayPal;
 using PayPal.Api;
 using System;
 using System.Collections.Generic;
@@ -81,7 +83,12 @@ namespace Application.Services
                 response.Message = "Payment created successfully.";
                 response.Data = createdPayment; // Return the created payment object
             }
-            catch (Exception ex)
+			catch (PayPalException payPalEx)
+			{
+				response.Success = false;
+				response.Message = $"PayPal error: {payPalEx.Message}";
+			}
+			catch (Exception ex)
             {
                 response.Success = false;
                 response.Message = $"Failed to create payment: {ex.Message}";
@@ -90,38 +97,72 @@ namespace Application.Services
             return response;
         }
 
-        public async Task<ServiceResponse<Payment>> ExecutePaymentAsync(string paymentId, string payerId)
-        {
-            var response = new ServiceResponse<Payment>();
+		public async Task<ServiceResponse<Payment>> ExecutePaymentAsync(string paymentId, string payerId)
+		{
+			var response = new ServiceResponse<Payment>();
+			try
+			{
+				var apiContext = new APIContext(new OAuthTokenCredential(
+					_configuration["PayPal:ClientId"],
+					_configuration["PayPal:ClientSecret"]
+				).GetAccessToken());
 
-            try
-            {
-                var apiContext = new APIContext(new OAuthTokenCredential(
-                    _configuration["PayPal:ClientId"],
-                    _configuration["PayPal:ClientSecret"]
-                ).GetAccessToken());
+				// Retrieve the payment details using the payment ID
+				var payment = Payment.Get(apiContext, paymentId);
 
-                var paymentExecution = new PaymentExecution() { payer_id = payerId };
-                var payment = new Payment() { id = paymentId };
+				// Check the payment state before executing
+				if (payment == null || string.IsNullOrEmpty(payment.state) || !(payment.transactions.Count > 0) || !int.TryParse(payment.transactions.First().invoice_number, out int orderId) || !(orderId > 0))
+				{
+					response.Success = false;
+					response.Message = "Payment not found or invalid.";
+					return response;
+				}
 
-                var executedPayment = payment.Execute(apiContext, paymentExecution);
+				// Optionally, check if the payment is already executed or pending
+				if (payment.state != "approved")
+				{
+					response.Success = false;
+					response.Message = "Payment is not approved yet.";
+					return response;
+				}
 
-                response.Success = true;
-                response.Message = "Payment executed successfully.";
-                response.Data = executedPayment; // Return the executed payment object
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = $"Failed to execute payment: {ex.Message}";
-            }
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
 
-            return response;
-        }
+				if (order == null || order.OrderStatus == false)
+				{
+					response.Success = false;
+					response.Message = "Order not found.";
+					return response;
+				}
 
-    }
+				// Prepare to execute the payment
+				var paymentExecution = new PaymentExecution() { payer_id = payerId };
+				var executedPayment = payment.Execute(apiContext, paymentExecution);
 
+				if (executedPayment == null || string.IsNullOrEmpty(executedPayment.state) || executedPayment.state == "failed")
+				{
+					response.Success = false;
+					response.Message = "Payment executed unsuccessfully.";
+					return response;
+				}
 
+                order.OrderStatus = true;
+                await _unitOfWork.OrderRepository.Update(order);
+
+				response.Success = true;
+				response.Message = "Payment executed successfully.";
+				response.Data = executedPayment; // Return the executed payment object
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = $"Failed to execute payment: {ex.Message}";
+			}
+
+			return response;
+		}
+
+	}
 
 }
 
