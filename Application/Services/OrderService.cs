@@ -91,7 +91,8 @@ namespace Application.Services
                     ProductId = detail.KoiId,
                     Price = detail.Price,
                     Quantity = detail.Quantity,
-                    ImageUrls = detail.Koi.Images.Select(i => i.ImageUrl).ToList()
+                    ImageUrls = detail.Koi?.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
+
                 }).ToList()
             };
         }
