@@ -74,7 +74,7 @@ namespace KoiFarmManagement.Controllers
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> cGetAllOrders([FromQuery] int page = 1, [FromQuery] int pageSize = 5,
-            [FromQuery] string search = "", [FromQuery] string status = "", [FromQuery] string sort = "id")
+            [FromQuery] string? search = "", [FromQuery] string? status = "", [FromQuery] string? sort = "")
         {
             var result = await _orderService.cGetAllOrder(page, pageSize, search, status, sort);
             if (!result.Success) return BadRequest(result);
