@@ -32,7 +32,7 @@ namespace Application.Services
 				{
 					throw new ArgumentNullException();
 				}
-				var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(cart.KoiId);
+				var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(cart.KoiId);
 				if (koi == null || koi.Category == null)
 				{
 					throw new ArgumentNullException(nameof(koi));

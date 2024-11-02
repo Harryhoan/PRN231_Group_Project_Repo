@@ -1,5 +1,6 @@
 ﻿using Application.ViewModels;
 using Application.ViewModels.CategoryDTO;
+using Application.ViewModels.ImageDTO;
 using Application.ViewModels.KoiDTO;
 using Application.ViewModels.OrderDetailDTO;
 using Application.ViewModels.OrderDTO;
@@ -42,9 +43,9 @@ CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!.FullName))
                .ReverseMap();
             CreateMap<OrderDetail, cOrderDetailsResDTO>().ReverseMap();
-
-            //CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
-            //      opt => opt.MapFrom(src => src.Category.Name)).ReverseMap();
+            CreateMap<Image, aImageDTO>().ReverseMap();
+            CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
+                  opt => opt.MapFrom(src => src.Category.Name)).ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images)).ReverseMap();
         }
     }	
 }

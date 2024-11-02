@@ -110,7 +110,7 @@ namespace Application.Services
                 var viewOrder = _mapper.Map<aOrderDTO>(order);
                 foreach (var orderDetail in viewOrder.OrderDetails)
                 {
-                    var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(orderDetail.KoiId);
+                    var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
                     if (koi == null || koi.Category == null)
                     {
                         throw new ArgumentException();
@@ -143,7 +143,7 @@ namespace Application.Services
 				{
 					foreach (var orderDetail in order.OrderDetails)
 					{
-						var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(orderDetail.KoiId);
+						var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
 						if (koi == null || koi.Category == null)
 						{
 							throw new ArgumentException();
@@ -177,7 +177,7 @@ namespace Application.Services
                 {
                     foreach (var orderDetail in order.OrderDetails)
                     {
-                        var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(orderDetail.KoiId);
+                        var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
                         if (koi == null || koi.Category == null)
                         {
                             throw new ArgumentException();

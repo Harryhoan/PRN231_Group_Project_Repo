@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.ViewModels.ImageDTO;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,11 @@ namespace Application.ViewModels.KoiDTO
 {
     public class dViewKoiDTO
     {
-        [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
+		[Required(ErrorMessage = "Name is required")]
+		[StringLength(100, ErrorMessage = "Name can't be longer than 100 characters")]
+		public string Name { get; set; } = string.Empty;
+
+		[StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
         public string Description { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Price is required")]
@@ -36,7 +41,7 @@ namespace Application.ViewModels.KoiDTO
         [Required(ErrorMessage = "Category Name is required")]
         public string CategoryName { get; set; } = string.Empty;
 
-        public List<Image> Images { get; set; } = new();
+        public List<aImageDTO> Images { get; set; } = new();
 
     }
 }

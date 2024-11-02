@@ -13,7 +13,7 @@ namespace Application.IRepositories
         Task cAddKoi(Koi koi); 
         Task<IEnumerable<Koi>> GetAllKOI();
         Task<List<Koi>> dGetFilteredKois(dFilterKoiDTO filter);
-        Task<Koi?> dGetKoiWithCategory(int id);
+        Task<Koi?> dGetKoiWithCategoryAndImages(int id);
         Task<Koi> cGetProductById(int id);
         Task<Koi> cGetProductNotImage(int id);
         Task cUpdateProduct(Koi product);
