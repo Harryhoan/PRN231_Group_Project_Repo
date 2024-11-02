@@ -51,6 +51,7 @@ namespace Application.Services
 				{
                     response.Success = false;
                     response.Message = "The cart already has this koi";
+					return response;
                 }
                 await _unitOfWork.KoiRepo.Update(koi);
 				var orderDetail = _mapper.Map<OrderDetail>(cart);
