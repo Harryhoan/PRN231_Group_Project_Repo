@@ -13,7 +13,7 @@ namespace KoiFarmManagement.Controllers
 {
     [Authorize(Roles = "Admin")]
     [ApiController]
-    public class KOIImageController :BaseController
+    public class KOIImageController : BaseController
     {
         private readonly Cloudinary _cloudinary;
         private readonly ApiContext _context;
@@ -114,13 +114,13 @@ namespace KoiFarmManagement.Controllers
             return Ok(new { imageUrl = productImage.ImageUrl });
         }
         [AllowAnonymous]
-        [HttpGet("images/{imageId}")]
+        [HttpGet("{id}")]
         public async Task<Image> GetImageInforById(int id)
         {
             return await _context.Images.FindAsync(id);
         }
         [AllowAnonymous]
-        [HttpGet("images")]
+        [HttpGet]
         public async Task<IEnumerable<Image>> GetAllImageInfors()
         {
             return _context.Images.ToList();
