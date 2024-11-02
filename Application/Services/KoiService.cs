@@ -219,6 +219,7 @@ namespace Application.Services
                 {
                     throw new ArgumentNullException(nameof(koi.Category));
                 }
+                var images = await _unitOfWork.ImageRepository.aGetImagesByKoiIdAsync(koi.Id);
                 response.Data = new dViewKoiDTO
                 {
                     CategoryName = koi.Category.Name,
@@ -226,7 +227,8 @@ namespace Application.Services
                     Description = koi.Description,
                     Dob = koi.Dob,
                     Price = koi.Price,
-                    Quantity = koi.Quantity
+                    Quantity = koi.Quantity,
+                    Images = images
                 };
                 response.Success = true;
 

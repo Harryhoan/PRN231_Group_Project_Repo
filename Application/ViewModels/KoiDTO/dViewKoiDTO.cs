@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace Application.ViewModels.KoiDTO
 
         [Required(ErrorMessage = "Category Name is required")]
         public string CategoryName { get; set; } = string.Empty;
+
+        public List<Image> Images { get; set; } = new();
 
     }
 }
