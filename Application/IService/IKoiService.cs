@@ -15,7 +15,7 @@ namespace Application.IService
         Task<ServiceResponse<int>> cCreateKOIAsync(cCreateKOIDTO cproduct);
         Task<ServiceResponse<PaginationModel<cKOIDTO>>> cGetAllKoisAsync(int page, int pageSize, string search, string sort);
 
-        Task<ServiceResponse<PaginationModel<Koi>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter);
+        Task<ServiceResponse<PaginationModel<dViewKoiDTO>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter);
         Task<ServiceResponse<PaginationModel<Koi>>> dGetAllKois(int pageNumber, int pageSize);
         Task<ServiceResponse<dViewKoiDTO>> dGetKOIById(int id);
         Task<ServiceResponse<cGetKoiByIdAdmin>> cGetKoibyAdmin(int id);

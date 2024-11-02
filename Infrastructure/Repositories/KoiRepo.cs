@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                var query = _dbContext.Kois.AsNoTracking().Include(k => k.Category).AsQueryable();
+                var query = _dbContext.Kois.AsNoTracking().Include(k => k.Category).Include(k => k.Images).AsQueryable();
                 if (query == null)
                 {
                     throw new ArgumentNullException("Finding any Koi produces an invalid result.");
@@ -108,9 +108,9 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<Koi?> dGetKoiWithCategory(int id)
+        public async Task<Koi?> dGetKoiWithCategoryAndImages(int id)
         {
-            return await _dbContext.Kois.Include(record => record.Category).SingleOrDefaultAsync(record => record.Id == id);
+            return await _dbContext.Kois.Include(record => record.Category).Include(record => record.Images).SingleOrDefaultAsync(record => record.Id == id);
         }
 
         public async Task<Koi> cGetProductById(int id)

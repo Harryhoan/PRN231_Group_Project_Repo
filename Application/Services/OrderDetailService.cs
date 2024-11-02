@@ -32,16 +32,28 @@ namespace Application.Services
 				{
 					throw new ArgumentNullException();
 				}
-				var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(cart.KoiId);
+				var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(cart.KoiId);
 				if (koi == null || koi.Category == null)
 				{
 					throw new ArgumentNullException(nameof(koi));
 				}
-				var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
-				if (order == null)
+				if (!(koi.Quantity > 0))
+				{
+                    response.Success = false;
+                    response.Message = "There is no more koi to add to cart";
+                }
+                var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
+				if (order == null || order.OrderDetails == null)
 				{
 					throw new ArgumentNullException(nameof(order));
 				}
+				if (order.OrderDetails.Any(o => o.KoiId == koi.Id))
+				{
+                    response.Success = false;
+                    response.Message = "The cart already has this koi";
+					return response;
+                }
+                await _unitOfWork.KoiRepo.Update(koi);
 				var orderDetail = _mapper.Map<OrderDetail>(cart);
 				orderDetail.Price = koi.Price * orderDetail.Quantity;
 				orderDetail.OrderId = order.Id;
@@ -88,10 +100,16 @@ namespace Application.Services
 				{
 					throw new ArgumentNullException(nameof(orderDetail));
 				}
-				if (!(await aCheckIfTheOrderDetailHasOrderWithUserId(id, user.Id)))
+				var existingOrder = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
+				if (existingOrder == null || orderDetail.Id != existingOrder.Id)
 				{
-					throw new UnauthorizedAccessException();
-				}
+                    response.Success = false;
+                    response.Message = "Cannot delete order detail";
+                }
+    //            if (!(await aCheckIfTheOrderDetailHasOrderWithUserId(id, user.Id)))
+				//{
+				//	throw new UnauthorizedAccessException();
+				//}
 				await _unitOfWork.OrderDetailRepository.cDeleteTokenAsync(orderDetail);
 				response.Data = true;
 				response.Success = true;

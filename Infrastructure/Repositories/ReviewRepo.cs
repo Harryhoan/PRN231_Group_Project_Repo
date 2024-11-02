@@ -18,7 +18,16 @@ namespace Infrastructure.Repositories
         }
         public async Task<bool> checkIdExist(int id)
         {
-            return await _dbContext.OrderDetails.AnyAsync(x => x.Id == id);
+            return await _dbContext.Reviews.AnyAsync(x => x.Id == id);
+        }
+
+        public async Task<List<Review>> GetReviewsByUserIdAsync(int userId)
+        {
+            return await _dbContext.Reviews.Where(r => r.OrderDetail.Order.UserId == userId).ToListAsync();
+        }
+        public async Task<Review?> GetReviewByOrderDetailAsync(int orderDetailId)
+        {
+            return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.OrderDetailId == orderDetailId);
         }
     }
 }

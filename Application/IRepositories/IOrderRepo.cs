@@ -10,6 +10,7 @@ namespace Application.IRepositories
 	public interface IOrderRepo : IGenericRepo<Order> 
 	{
 		Task<Order?> aGetPendingOrderByUserIdAsync(int userId);
+		Task<List<Order>> aGetOrdersByUser(int userId);
         Task<IEnumerable<Order>> cGetAllOrders();
 
     }

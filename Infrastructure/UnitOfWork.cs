@@ -19,8 +19,9 @@ namespace Infrastructure
         private readonly IOrderRepo _orderRepo;
         private readonly IReviewRepo _reviewRepo;
         private readonly IOrderDetailRepo _orderDetailRepo;
+        private readonly IImageRepo _imageRepo;
         public UnitOfWork(ApiContext apiContext, IUserRepo userRepository,
-            ITokenRepo tokenRepo, ICategoryRepo categoryRepo, IKoiRepo koiRepo, IOrderRepo orderRepo, IReviewRepo reviewRepo, IOrderDetailRepo orderDetailRepo)
+            ITokenRepo tokenRepo, ICategoryRepo categoryRepo, IKoiRepo koiRepo, IOrderRepo orderRepo, IReviewRepo reviewRepo, IOrderDetailRepo orderDetailRepo, IImageRepo imageRepo)
         {
             //if (apiContext == null) throw new ArgumentNullException(nameof(apiContext));
             //if (userRepository == null) throw new ArgumentNullException(nameof(userRepository));
@@ -36,6 +37,7 @@ namespace Infrastructure
             _orderRepo = orderRepo ?? throw new ArgumentNullException(nameof(orderRepo));
             _reviewRepo = reviewRepo ?? throw new ArgumentNullException(nameof(reviewRepo));
 			_orderDetailRepo = orderDetailRepo ?? throw new ArgumentNullException(nameof(orderDetailRepo));
+            _imageRepo = imageRepo ?? throw new ArgumentNullException(nameof(imageRepo));
 		}
 		public IUserRepo UserRepository => _userRepository;
 
@@ -50,6 +52,8 @@ namespace Infrastructure
         public IReviewRepo ReviewRepository => _reviewRepo;
 
         public IOrderDetailRepo OrderDetailRepository => _orderDetailRepo;
+
+        public IImageRepo ImageRepository => _imageRepo;
 
         public async Task<int> SaveChangeAsync()
 		{

@@ -126,7 +126,7 @@ namespace KoiFarmManagement.Controllers
             return _context.Images.ToList();
         }
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
+        [HttpDelete("images/{imageId}")]
         public async Task DeleteProductImage(int id)
         {
             var iproduct = await _context.Images.FindAsync(id);

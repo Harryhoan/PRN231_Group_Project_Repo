@@ -52,6 +52,30 @@ namespace Application.Services
             }
             return response;
         }
+
+        public async Task<ServiceResponse<string>> aUpdateCategory(aViewCategory cat)
+        {
+            var response = new ServiceResponse<string>();
+
+            try
+            {
+                var category = await _unitOfWork.CategoryRepo.GetByIdAsync(cat.Id);
+                if (category == null)
+                {
+                    throw new ArgumentNullException(nameof(category));
+                }
+                await _unitOfWork.CategoryRepo.Update(category);
+                response.Success = true;
+                response.Message = "Category updated successfully.";
+                response.Data = response.Message;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to create product: {ex.Message}";
+            }
+            return response;
+        }
         public async Task<ServiceResponse<List<dCreateCategoryDTO>>> dGetAllCategory()
         {
             var response = new ServiceResponse<List<dCreateCategoryDTO>>();

@@ -16,6 +16,7 @@ namespace Application
         public IOrderRepo OrderRepository { get; }
         public IReviewRepo ReviewRepository { get; }
 		public IOrderDetailRepo OrderDetailRepository { get; }
+		public IImageRepo ImageRepository { get; }
 
 		public Task<int> SaveChangeAsync();
     }

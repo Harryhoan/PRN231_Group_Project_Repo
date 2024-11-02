@@ -3,6 +3,7 @@ using Application.IService;
 using Application.ServiceResponse;
 using Application.Utils;
 using Application.ViewModels;
+using Application.ViewModels.ImageDTO;
 using Application.ViewModels.KoiDTO;
 using AutoMapper;
 using Domain.Entities;
@@ -105,9 +106,9 @@ namespace Application.Services
             }
             return response;
         }
-        public async Task<ServiceResponse<PaginationModel<Koi>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter)
+        public async Task<ServiceResponse<PaginationModel<dViewKoiDTO>>> dGetFilteredKOIsAsync(dFilterKoiDTO filter)
         {
-            var response = new ServiceResponse<PaginationModel<Koi>>();
+            var response = new ServiceResponse<PaginationModel<dViewKoiDTO>>();
             try
             {
                 var koiList = await _unitOfWork.KoiRepo.dGetFilteredKois(filter);
@@ -115,16 +116,18 @@ namespace Application.Services
                 {
                     throw new ArgumentNullException(nameof(filter));
                 }
-                var totalRecords = koiList.Count();
-                koiList.Skip((filter.PageNumber - 1) * filter.PageSize)
-                .Take(filter.PageSize);
-                var paginationModel = new PaginationModel<Koi>
+                var kois = _mapper.Map<List<dViewKoiDTO>>(koiList.ToList());
+                var totalRecords = kois.Count();
+				var pagedKois = kois.Skip((filter.PageNumber - 1) * filter.PageSize)
+									 .Take(filter.PageSize)
+									 .ToList(); 
+                var paginationModel = new PaginationModel<dViewKoiDTO>
                 {
                     Page = filter.PageNumber,
                     TotalPage = (int)Math.Ceiling(totalRecords / (double)filter.PageSize),
                     TotalRecords = totalRecords,
-                    ListData = koiList
-                };
+                    ListData = pagedKois
+				};
                 response.Data = paginationModel;
                 response.Success = true;
             }
@@ -204,42 +207,59 @@ namespace Application.Services
             return response;
         }
 
-        public async Task<ServiceResponse<dViewKoiDTO>> dGetKOIById(int id)
-        {
-            var response = new ServiceResponse<dViewKoiDTO>();
+		public async Task<ServiceResponse<dViewKoiDTO>> dGetKOIById(int id)
+		{
+			var response = new ServiceResponse<dViewKoiDTO>();
 
-            try
-            {
-                var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategory(id);
-                if (koi == null)
-                {
-                    throw new ArgumentNullException(nameof(koi));
-                }
-                if (koi.Category == null)
-                {
-                    throw new ArgumentNullException(nameof(koi.Category));
-                }
-                response.Data = new dViewKoiDTO
-                {
-                    CategoryName = koi.Category.Name,
-                    CategoryId = koi.Category.Id,
-                    Description = koi.Description,
-                    Dob = koi.Dob,
-                    Price = koi.Price,
-                    Quantity = koi.Quantity
-                };
-                response.Success = true;
+			try
+			{
+				var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(id);
+				if (koi == null)
+				{
+					response.Success = false;
+					response.Message = "Koi not found.";
+					return response;
+				}
+				if (koi.Category == null)
+				{
+					response.Success = false;
+					response.Message = "Category not found.";
+					return response;
+				}
+				if (koi.Images == null)
+				{
+					response.Success = false;
+					response.Message = "Images not found.";
+					return response;
+				}
+				response.Data = new dViewKoiDTO
+				{
+                    Name = koi.Name,
+					CategoryName = koi.Category.Name,
+					CategoryId = koi.Category.Id,
+					Description = koi.Description,
+					Dob = koi.Dob,
+					Price = koi.Price,
+					Quantity = koi.Quantity,
+					Size = koi.Size,
+					Images = _mapper.Map<List<aImageDTO>>(koi.Images)
+				};
+				response.Success = true;
+			}
+			catch (ArgumentNullException ex)
+			{
+				response.Success = false;
+				response.Message = $"Failed to get koi: {ex.Message}";
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = $"Failed to get koi: {ex.Message}";
+			}
+			return response;
+		}
 
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = $"Failed to get koi: {ex.Message}";
-            }
-            return response;
-        }
-
-        public async Task<ServiceResponse<string>> cUpdateProductAsync(cUpdateProductDTO cproduct)
+		public async Task<ServiceResponse<string>> cUpdateProductAsync(cUpdateProductDTO cproduct)
         {
             var response = new ServiceResponse<string>();
 
