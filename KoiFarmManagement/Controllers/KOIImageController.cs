@@ -13,7 +13,7 @@ namespace KoiFarmManagement.Controllers
 {
     [Authorize(Roles = "Admin")]
     [ApiController]
-    public class KOIImageController :BaseController
+    public class KOIImageController : BaseController
     {
         private readonly Cloudinary _cloudinary;
         private readonly ApiContext _context;
