@@ -367,5 +367,10 @@ namespace Application.Services
 
             return response;
         }
+
+        public async Task<List<Image>> GetImagesByKoiIdForAdmin(int koiId)
+        {
+            return await _koiRepo.GetImagesByKoiIdForAdmin(koiId);
+        }
     }
 }
