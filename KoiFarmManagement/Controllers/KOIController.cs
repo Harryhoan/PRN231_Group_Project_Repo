@@ -126,5 +126,19 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
+        /// <summary>
+        /// get image for product by admin
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{koiId}/images")]
+        public async Task<IActionResult> GetImagesByKoiId(int koiId)
+        {
+            var images = await _koiService.GetImagesByKoiIdForAdmin(koiId);
+            if (images == null || images.Count == 0)
+            {
+                return NotFound(new { Message = "Không tìm thấy ảnh cho Koi này." });
+            }
+            return Ok(new { Data = images });
+        }
     }
 }
