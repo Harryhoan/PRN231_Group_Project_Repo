@@ -18,6 +18,6 @@ namespace Application.IRepositories
         Task<Koi> cGetProductNotImage(int id);
         Task cUpdateProduct(Koi product);
         Task cDeleteProduct(int id);
-
+        Task<List<Image>> GetImagesByKoiIdForAdmin(int koiId);
     }
 }

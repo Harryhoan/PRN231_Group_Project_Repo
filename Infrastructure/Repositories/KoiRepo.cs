@@ -187,5 +187,12 @@ namespace Infrastructure.Repositories
                 throw new Exception("An error occurred while deleting the product.", ex);
             }
         }
+
+        public async Task<List<Image>> GetImagesByKoiIdForAdmin(int koiId)
+        {
+            return await _context.Images
+           .Where(image => image.KoiId == koiId)
+           .ToListAsync();
+        }
     }
 }

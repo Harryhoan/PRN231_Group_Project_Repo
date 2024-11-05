@@ -71,31 +71,31 @@ namespace Application.Services
 				response.Message = $"Failed to retrieve orders: {ex.Message}";
 			}
 
-			return response;
-		}
-		private List<cOrderDTO> MapToDTO(IEnumerable<Order> orders)
-		{
-			return orders.Select(order => MapToDTO(order)).ToList();
-		}
-		private cOrderDTO MapToDTO(Order order)
-		{
-			return new cOrderDTO
-			{
-				Id = order.Id,
-				UserId = order.UserId,
-				UserName = order.User.FullName,
-				PaymentDate = order.OrderDate,
-				Status = order.OrderStatus,
-				OrderDetails = order.OrderDetails.Select(detail => new cOrderDetailsResDTO
-				{
-					Id = detail.Id,
-					ProductId = detail.KoiId,
-					Price = detail.Price,
-					Quantity = detail.Quantity,
-					ImageUrls = detail.Koi.Images.Select(i => i.ImageUrl).ToList()
+            return response;
+        }
+        private List<cOrderDTO> MapToDTO(IEnumerable<Order> orders)
+        {
+            return orders.Select(order => MapToDTO(order)).ToList();
+        }
+        private cOrderDTO MapToDTO(Order order)
+        {
+            return new cOrderDTO
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                UserName = order.User.FullName,
+                PaymentDate = order.OrderDate,
+                Status = order.OrderStatus,
+                OrderDetails = order.OrderDetails.Select(detail => new cOrderDetailsResDTO
+                {
+                    Id = detail.Id,
+                    ProductId = detail.KoiId,
+                    Price = detail.Price,
+                    Quantity = detail.Quantity,
+					ImageUrls = detail.Koi?.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
 				}).ToList()
-			};
-		}
+            };
+        }
 
 		public async Task<ServiceResponse<aOrderDTO>> GetCart(User user)
 		{
