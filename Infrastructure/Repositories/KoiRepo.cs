@@ -59,7 +59,12 @@ namespace Infrastructure.Repositories
                         query = query.Where(k => k.Id == filter.Id.Value);
                     }
 
-                    if (!string.IsNullOrEmpty(filter.Description))
+					if (!string.IsNullOrEmpty(filter.Name))
+					{
+						query = query.Where(k => k.Description.Contains(filter.Name));
+					}
+
+					if (!string.IsNullOrEmpty(filter.Description))
                     {
                         query = query.Where(k => k.Description.Contains(filter.Description));
                     }
@@ -94,11 +99,16 @@ namespace Infrastructure.Repositories
                         query = query.Where(k => k.Dob <= filter.DobEnd.Value);
                     }
 
-                    if (filter.CategoryId.HasValue)
-                    {
-                        query = query.Where(k => k.CategoryId == filter.CategoryId.Value);
-                    }
-                }
+                    //if (filter.CategoryId.HasValue)
+                    //{
+                    //    query = query.Where(k => k.CategoryId == filter.CategoryId.Value);
+                    //}
+
+					if (!string.IsNullOrWhiteSpace(filter.CategoryName))
+					{
+						query = query.Where(k => k.Category.Name.Contains(filter.CategoryName));
+					}
+				}
                 return await query.ToListAsync();
 
             }

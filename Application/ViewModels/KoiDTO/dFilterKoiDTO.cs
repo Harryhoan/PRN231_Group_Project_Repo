@@ -11,8 +11,12 @@ namespace Application.ViewModels.KoiDTO
     {
 
         public int? Id { get; set; } = null;
-        [StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
+		[StringLength(100, ErrorMessage = "Name can't be longer than 100 characters")]
+		public string? Name { get; set; } = null;
+
+		[StringLength(500, ErrorMessage = "Description can't be longer than 500 characters")]
         public string? Description { get; set; } = null;
+
 		[Range(0, double.MaxValue, ErrorMessage = "Minimum price must be a non-negative number")]
         public decimal? MinPrice { get; set; } = null;
 		[Range(0, double.MaxValue, ErrorMessage = "Maximum price must be a non-negative number")]
@@ -25,10 +29,15 @@ namespace Application.ViewModels.KoiDTO
         public DateTime? DobStart { get; set; } = null;
 		[DataType(DataType.Date, ErrorMessage = "Invalid end date")]
         public DateTime? DobEnd { get; set; } = null;
-		[Range(1, int.MaxValue, ErrorMessage = "Category ID must be a positive integer")]
-        public int? CategoryId { get; set; } = null;
+		//[Range(1, int.MaxValue, ErrorMessage = "Category ID must be a positive integer")]
+  //      public int? CategoryId { get; set; } = null;
+
+		[StringLength(100, ErrorMessage = "Category Name can't be longer than 100 characters")]
+		public string? CategoryName { get; set; } = null;
+		[Range(0, int.MaxValue, ErrorMessage = "Page Number must be a positive integer")]
 		public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+		[Range(0, int.MaxValue, ErrorMessage = "Page Size must be a positive integer")]
+		public int PageSize { get; set; } = 10;
     }
 
 }

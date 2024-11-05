@@ -1,5 +1,6 @@
 ﻿using Application.IService;
 using Application.ServiceResponse;
+using Application.ViewModels.KoiDTO;
 using Application.ViewModels.OrderDetailDTO;
 using AutoMapper;
 using Domain.Entities;
@@ -33,11 +34,11 @@ namespace Application.Services
 					throw new ArgumentNullException();
 				}
 				var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(cart.KoiId);
-				if (koi == null || koi.Category == null)
+				if (koi == null || koi.Category == null || koi.Images == null)
 				{
 					throw new ArgumentNullException(nameof(koi));
 				}
-				if (!(koi.Quantity > 0))
+				if (!(koi.Quantity > 0 && koi.Quantity < 2))
 				{
                     response.Success = false;
                     response.Message = "There is no more koi to add to cart";
@@ -55,12 +56,13 @@ namespace Application.Services
                 }
                 await _unitOfWork.KoiRepo.Update(koi);
 				var orderDetail = _mapper.Map<OrderDetail>(cart);
-				orderDetail.Price = koi.Price * orderDetail.Quantity;
+				orderDetail.Price = koi.Price;
 				orderDetail.OrderId = order.Id;
 				await _unitOfWork.OrderDetailRepository.AddAsync(orderDetail);
 				order.TotalPrice += orderDetail.Price;
+				await _unitOfWork.OrderRepository.Update(order);
 				var viewCart = _mapper.Map<aViewOrderDetailDTO>(orderDetail);
-				viewCart.CategoryName = koi.Category.Name;
+				viewCart.Koi = _mapper.Map<dViewKoiDTO>(koi);
 				response.Data = viewCart;
 				response.Success = true;
 				response.Message = "Cart added successfully";
@@ -105,12 +107,16 @@ namespace Application.Services
 				{
                     response.Success = false;
                     response.Message = "Cannot delete order detail";
+					return response;
                 }
     //            if (!(await aCheckIfTheOrderDetailHasOrderWithUserId(id, user.Id)))
 				//{
 				//	throw new UnauthorizedAccessException();
 				//}
 				await _unitOfWork.OrderDetailRepository.cDeleteTokenAsync(orderDetail);
+				existingOrder.TotalPrice -= orderDetail.Price;
+				await _unitOfWork.OrderRepository.Update(existingOrder);
+
 				response.Data = true;
 				response.Success = true;
 				response.Message = "Cart deleted successfully";
