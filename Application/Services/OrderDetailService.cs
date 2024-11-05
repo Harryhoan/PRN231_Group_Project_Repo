@@ -42,6 +42,7 @@ namespace Application.Services
 				{
                     response.Success = false;
                     response.Message = "There is no more koi to add to cart";
+					return response;
                 }
                 var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
 				if (order == null || order.OrderDetails == null)
