@@ -11,97 +11,146 @@ using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class PaymentService : IPaymentService
-    {
-        private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
+	public class PaymentService : IPaymentService
+	{
+		private readonly IConfiguration _configuration;
+		private readonly IMapper _mapper;
+		private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentService(IMapper mapper, IUnitOfWork unitOfWork,IConfiguration configuration)
-        { 
-            _configuration = configuration;
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
-        }
-        public async Task<ServiceResponse<Payment>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl)
-        {
-            var response = new ServiceResponse<Payment>();
+		public PaymentService(IMapper mapper, IUnitOfWork unitOfWork, IConfiguration configuration)
+		{
+			_configuration = configuration;
+			_mapper = mapper;
+			_unitOfWork = unitOfWork;
+		}
+		public async Task<ServiceResponse<Payment>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl)
+		{
+			var response = new ServiceResponse<Payment>();
 
-            try
-            {
-                // Retrieve the pending order for the user
-                var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(userId);
+			try
+			{
+				// Retrieve the pending order for the user
+				//var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(userId);
 
-                if (order == null)
-                {
-                    response.Success = false;
-                    response.Message = "Order not found.";
-                    return response;
-                }
-				if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
+				//if (order == null || order.OrderStatus != false)
+				//{
+				//	response.Success = false;
+				//	response.Message = "Order not found.";
+				//	return response;
+				//}
+				//if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
+				//{
+				//	response.Success = false;
+				//	response.Message = "No product found.";
+				//	return response;
+				//}
+
+
+				//int i = 0;
+				//while (i < order.OrderDetails.Count)
+				//{
+				//	var koi = await _unitOfWork.KoiRepo.GetByIdAsync(order.OrderDetails.ElementAt(i).KoiId);
+				//	if (koi != null && koi.Price > 0 && koi.Quantity > 0)
+				//	{
+				//		if (!(order.OrderDetails.ElementAt(i).Price > 0) || order.OrderDetails.ElementAt(i).Price < koi.Price)
+				//		{
+				//			if (order.OrderDetails.ElementAt(i).Quantity < 1)
+				//			{
+				//				order.OrderDetails.ElementAt(i).Quantity = 1;
+				//			}
+				//			order.OrderDetails.ElementAt(i).Price = koi.Price * order.OrderDetails.ElementAt(i).Quantity;
+				//		}
+				//		i++;
+				//		continue;
+				//	}
+				//	var id = order.OrderDetails.ElementAt(i);
+				//	order.OrderDetails.Remove(order.OrderDetails.ElementAt(i));
+				//	await _unitOfWork.OrderDetailRepository.cDeleteTokenAsync(id);
+				//}
+
+				//if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
+				//{
+				//	response.Success = false;
+				//	response.Message = "The cart is invalid.";
+				//	return response;
+				//}
+
+				//if (!(order.TotalPrice > 0))
+				//{
+				//	order.TotalPrice = order.OrderDetails.Sum(o => o.Price);
+				//	await _unitOfWork.OrderRepository.Update(order);
+				//}
+
+				var order = await ValidateOrder(userId);
+				if (order == null)
 				{
 					response.Success = false;
-					response.Message = "No product found.";
+					response.Message = string.IsNullOrEmpty(errorMessage) ? "The order is invalid. Please try again." : errorMessage;
 					return response;
 				}
 
-				// Setup PayPal API context
+				decimal conversionRate = 23000m;
+				decimal totalAmountVND = order.TotalPrice;
+				decimal totalAmountUSD = totalAmountVND / conversionRate;
+				string totalAmountInUSD = totalAmountUSD.ToString("F2");
+
 				var apiContext = new APIContext(new OAuthTokenCredential(
-                    _configuration["PayPal:ClientId"],
-                    _configuration["PayPal:ClientSecret"]
-                ).GetAccessToken());
+					_configuration["PayPal:ClientId"],
+					_configuration["PayPal:ClientSecret"]
+				).GetAccessToken());
 
-                // Create the payment object
-                var payment = new Payment
-                {
-                    intent = "sale",
-                    payer = new Payer { payment_method = "paypal" },
-                    transactions = new List<Transaction>
-            {
-                new Transaction
-                {
-                    description = $"Order {order.Id} - Payment",
-                    invoice_number = order.Id.ToString(),
-                    amount = new Amount
-                    {
-                        currency = "VND",
-                        total = order.TotalPrice.ToString("F2") // Format to two decimal places
-                    }
-                }
-            },
-                    redirect_urls = new RedirectUrls
-                    {
-                        cancel_url = cancelUrl,
-                        return_url = returnUrl
-                    }
-                };
+				var payment = new Payment
+				{
+					intent = "sale",
+					payer = new Payer { payment_method = "paypal" },
+					transactions = new List<Transaction>
+			{
+				new Transaction
+				{
+					description = $"Order {order.Id} - Payment",
+					invoice_number = order.Id.ToString(),
+					amount = new Amount
+					{
+						currency = "USD",
+						total = totalAmountInUSD
+					},
+					custom = order.UserId.ToString()
+				}
+			},
+					redirect_urls = new RedirectUrls
+					{
+						cancel_url = cancelUrl,
+						return_url = returnUrl
+					}
+				};
 
-                // Create the payment
-                var createdPayment = payment.Create(apiContext);
+				var createdPayment = payment.Create(apiContext);
 
-                // Return the response
-                response.Success = true;
-                response.Message = "Payment created successfully.";
-                response.Data = createdPayment; // Return the created payment object
-            }
+				// Return the response
+				response.Success = true;
+				response.Message = "Payment created successfully.";
+				response.Data = createdPayment;
+			}
 			catch (PayPalException payPalEx)
 			{
 				response.Success = false;
 				response.Message = $"PayPal error: {payPalEx.Message}";
 			}
 			catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = $"Failed to create payment: {ex.Message}";
-            }
+			{
+				response.Success = false;
+				response.Message = $"Failed to create payment: {ex.Message}";
+			}
 
-            return response;
-        }
+			return response;
+		}
 
 		public async Task<ServiceResponse<Payment>> ExecutePaymentAsync(string paymentId, string payerId)
 		{
@@ -113,18 +162,15 @@ namespace Application.Services
 					_configuration["PayPal:ClientSecret"]
 				).GetAccessToken());
 
-				// Retrieve the payment details using the payment ID
 				var payment = Payment.Get(apiContext, paymentId);
 
-				// Check the payment state before executing
-				if (payment == null || string.IsNullOrEmpty(payment.state) || !(payment.transactions.Count > 0) || !int.TryParse(payment.transactions.First().invoice_number, out int orderId) || !(orderId > 0))
+				if (payment == null || string.IsNullOrEmpty(payment.state) || !(payment.transactions.Count > 0) || !int.TryParse(payment.transactions.First().custom, out int userId) || !(userId > 0) || !int.TryParse(payment.transactions.First().invoice_number, out int orderId) || !(orderId > 0))
 				{
 					response.Success = false;
 					response.Message = "Payment not found or invalid.";
 					return response;
 				}
 
-				// Optionally, check if the payment is already executed or pending
 				if (payment.state != "approved")
 				{
 					response.Success = false;
@@ -132,13 +178,31 @@ namespace Application.Services
 					return response;
 				}
 
-                var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+				var order = await ValidateOrder(userId);
 
-				if (order == null || order.OrderStatus == false)
+				if (!string.IsNullOrEmpty(errorMessage) || order == null || order.Id != orderId || order.OrderDetails == null || !(order.OrderDetails.Count > 0))
 				{
+					if (payment.state == "authorized")
+					{
+						var authorization = new Authorization() { id = payment.id };
+						var voidResponse = authorization.Void(apiContext);
+					}
 					response.Success = false;
-					response.Message = "Order not found.";
+					response.Message = string.IsNullOrEmpty(errorMessage) ? "The order is invalid. Please try again." : errorMessage;
 					return response;
+
+				}
+
+				order.OrderStatus = true;
+				await _unitOfWork.OrderRepository.Update(order);
+				foreach (var orderDetail in order.OrderDetails)
+				{
+					var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+					if (koi != null)
+					{
+						koi.Quantity -= orderDetail.Quantity;
+						await _unitOfWork.KoiRepo.Update(koi);
+					}
 				}
 
 				// Prepare to execute the payment
@@ -152,8 +216,11 @@ namespace Application.Services
 					return response;
 				}
 
-                order.OrderStatus = true;
-                await _unitOfWork.OrderRepository.Update(order);
+				var cart = new Domain.Entities.Order();
+				order.UserId = userId;
+				order.ShippingFee = 0;
+				order.TotalPrice = 0;
+				await _unitOfWork.OrderRepository.AddAsync(order);
 
 				response.Success = true;
 				response.Message = "Payment executed successfully.";
@@ -168,6 +235,70 @@ namespace Application.Services
 			return response;
 		}
 
+		private string errorMessage = string.Empty;
+
+		public async Task<Domain.Entities.Order?> ValidateOrder(int userId)
+		{
+			try
+			{
+				var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(userId);
+
+				if (order == null || order.OrderStatus != false)
+				{
+					errorMessage = "The details of the order have been changed and the payment cannot be proceeded with.";
+					return null;
+				}
+				if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
+				{
+					errorMessage = "No product found.";
+					return null;
+				}
+
+				int i = 0;
+				while (i < order.OrderDetails.Count)
+				{
+					var koi = await _unitOfWork.KoiRepo.GetByIdAsync(order.OrderDetails.ElementAt(i).KoiId);
+					if (koi != null && koi.Price > 0 && koi.Quantity > 0)
+					{
+						if (!(order.OrderDetails.ElementAt(i).Price > 0) || order.OrderDetails.ElementAt(i).Price < koi.Price)
+						{
+							if (order.OrderDetails.ElementAt(i).Quantity < 1)
+							{
+								order.OrderDetails.ElementAt(i).Quantity = 1;
+							}
+							order.OrderDetails.ElementAt(i).Price = koi.Price * order.OrderDetails.ElementAt(i).Quantity;
+							errorMessage = "The details of the order have been changed. Please try again.";
+						}
+						i++;
+						continue;
+					}
+					errorMessage = "The details of the order have been changed. Please try again.";
+					var id = order.OrderDetails.ElementAt(i);
+					order.OrderDetails.Remove(order.OrderDetails.ElementAt(i));
+					await _unitOfWork.OrderDetailRepository.cDeleteTokenAsync(id);
+				}
+
+				if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
+				{
+					errorMessage = "The cart is invalid.";
+					return null;
+				}
+
+				if (!(order.TotalPrice > 0))
+				{
+					order.TotalPrice = order.OrderDetails.Sum(o => o.Price);
+					await _unitOfWork.OrderRepository.Update(order);
+					errorMessage = "The details of the order have been changed. Please try again.";
+				}
+
+				return order;
+			}
+			catch (Exception ex)
+			{
+				errorMessage = ex.Message;
+				return null;
+			}
+		}
 	}
 
 }
