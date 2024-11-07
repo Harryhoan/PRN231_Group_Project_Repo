@@ -28,7 +28,10 @@ namespace Application.Services
 			_mapper = mapper;
 			_orderRepo = order;
 		}
-
+        public int CountOrders()
+        {
+            return _orderRepo.GetCountOrders();
+        }
         public async Task<ServiceResponse<PaginationModel<cOrderDTO>>> cGetAllOrder(int page, int pageSize, string search, string filter, string sort)
         {
             var response = new ServiceResponse<PaginationModel<cOrderDTO>>();
@@ -197,9 +200,6 @@ namespace Application.Services
             return response;
         }
 
-        public int CountOrders()
-        {
-            return _orderRepo.GetCountOrders();
-        }
+       
     }
 }

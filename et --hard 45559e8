@@ -1,0 +1,69 @@
+[33m45559e8[m[33m ([m[1;36mHEAD -> [m[1;32mChechMinhBranch[m[33m)[m HEAD@{0}: reset: moving to HEAD@{1}
+[33mb7ce0a6[m[33m ([m[1;31morigin/ChechMinhBranch[m[33m)[m HEAD@{1}: commit (merge): Merge branch 'main' into ChechMinhBranch
+[33m45559e8[m[33m ([m[1;36mHEAD -> [m[1;32mChechMinhBranch[m[33m)[m HEAD@{2}: checkout: moving from main to ChechMinhBranch
+[33m8f9d212[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{3}: checkout: moving from ChechMinhBranch to main
+[33m45559e8[m[33m ([m[1;36mHEAD -> [m[1;32mChechMinhBranch[m[33m)[m HEAD@{4}: commit: count-byAdmin
+[33maf80369[m HEAD@{5}: commit: fix image
+[33mbc3ffc2[m HEAD@{6}: commit: fix
+[33mc5d2c64[m HEAD@{7}: commit (merge): Merge branch 'main' of https://github.com/Harryhoan/PRN231_Group_Project_Repo into ChechMinhBranch
+[33med99ec6[m HEAD@{8}: commit: fix
+[33mc5f3ded[m HEAD@{9}: checkout: moving from main to ChechMinhBranch
+[33ma56f68d[m HEAD@{10}: commit (merge): Merge branch 'main' of https://github.com/Harryhoan/PRN231_Group_Project_Repo
+[33m0c3b409[m HEAD@{11}: checkout: moving from ChechMinhBranch to main
+[33mc5f3ded[m HEAD@{12}: checkout: moving from main to ChechMinhBranch
+[33m0c3b409[m HEAD@{13}: commit (merge): Merge branch 'ChechMinhBranch'
+[33mc72fff5[m HEAD@{14}: checkout: moving from ChechMinhBranch to main
+[33mc5f3ded[m HEAD@{15}: commit: show-order-byAdmin
+[33mef272d0[m HEAD@{16}: checkout: moving from main to ChechMinhBranch
+[33mb01eb61[m HEAD@{17}: merge ChechMinhBranch: Merge made by the 'ort' strategy.
+[33m26a0387[m HEAD@{18}: checkout: moving from ChechMinhBranch to main
+[33mef272d0[m HEAD@{19}: commit: fix
+[33m511559a[m HEAD@{20}: commit: add delete-product-byAdmin
+[33m7712020[m HEAD@{21}: commit: fix moreeeeeeeee
+[33m0db3262[m HEAD@{22}: commit: getproduct-to-update
+[33m6280167[m HEAD@{23}: checkout: moving from main to ChechMinhBranch
+[33m6280167[m HEAD@{24}: checkout: moving from ChechMinhBranch to main
+[33m6280167[m HEAD@{25}: checkout: moving from main to ChechMinhBranch
+[33m6280167[m HEAD@{26}: merge ChechMinhBranch: Fast-forward
+[33m8311fdf[m HEAD@{27}: checkout: moving from ChechMinhBranch to main
+[33m6280167[m HEAD@{28}: commit: delete-product-image-ByAdmin
+[33m3e11a90[m HEAD@{29}: commit: get-image-to-update
+[33md3217fb[m HEAD@{30}: commit: Update-product-image-byAdmin
+[33mf974753[m HEAD@{31}: commit (merge): Merge branch 'main' into ChechMinhBranch
+[33m0e7ff31[m HEAD@{32}: checkout: moving from main to ChechMinhBranch
+[33m8311fdf[m HEAD@{33}: checkout: moving from ChechMinhBranch to main
+[33m0e7ff31[m HEAD@{34}: commit: update-product-byAdmin
+[33mc4ca673[m HEAD@{35}: checkout: moving from main to ChechMinhBranch
+[33m857f1a0[m HEAD@{36}: merge ChechMinhBranch: Merge made by the 'ort' strategy.
+[33m95535a3[m HEAD@{37}: checkout: moving from ChechMinhBranch to main
+[33mc4ca673[m HEAD@{38}: commit: fix add product
+[33mbf4c9f0[m HEAD@{39}: checkout: moving from main to ChechMinhBranch
+[33ma05fbbd[m HEAD@{40}: merge ChechMinhBranch: Merge made by the 'ort' strategy.
+[33m51ba8fe[m HEAD@{41}: checkout: moving from ChechMinhBranch to main
+[33mbf4c9f0[m HEAD@{42}: commit: get-all-product-byAdmin
+[33mec61d5a[m HEAD@{43}: checkout: moving from main to ChechMinhBranch
+[33m51ba8fe[m HEAD@{44}: reset: moving to HEAD
+[33m51ba8fe[m HEAD@{45}: merge ChechMinhBranch: Merge made by the 'ort' strategy.
+[33m9f9c068[m HEAD@{46}: checkout: moving from ChechMinhBranch to main
+[33mec61d5a[m HEAD@{47}: commit: fix
+[33me0cf785[m HEAD@{48}: checkout: moving from main to ChechMinhBranch
+[33mf8645a3[m HEAD@{49}: checkout: moving from ChechMinhBranch to main
+[33me0cf785[m HEAD@{50}: commit (merge): Merge branch 'main' of https://github.com/Harryhoan/PRN231_Group_Project_Repo into ChechMinhBranch
+[33m0a0103e[m HEAD@{51}: checkout: moving from ChechMinhBranch to ChechMinhBranch
+[33m0a0103e[m HEAD@{52}: checkout: moving from main to ChechMinhBranch
+[33mf8645a3[m HEAD@{53}: checkout: moving from ChechMinhBranch to main
+[33m0a0103e[m HEAD@{54}: checkout: moving from main to ChechMinhBranch
+[33mf8645a3[m HEAD@{55}: checkout: moving from ChechMinhBranch to main
+[33m0a0103e[m HEAD@{56}: checkout: moving from main to ChechMinhBranch
+[33mf8645a3[m HEAD@{57}: checkout: moving from ChechMinhBranch to main
+[33m0a0103e[m HEAD@{58}: commit: add getAllUserByAdmin and getAllProductByAdmin
+[33m73a0bb8[m HEAD@{59}: commit: fix
+[33m7a61348[m HEAD@{60}: commit: fix more
+[33m050dcff[m HEAD@{61}: commit: fix
+[33m0ca6146[m HEAD@{62}: commit: add resendconfirm
+[33m13a50cb[m HEAD@{63}: commit: add product, add image
+[33m6108c9a[m HEAD@{64}: checkout: moving from main to ChechMinhBranch
+[33mfc01460[m[33m ([m[1;31morigin/HoangMinhBranch[m[33m)[m HEAD@{65}: checkout: moving from ChechMinhBranch to main
+[33m6108c9a[m HEAD@{66}: commit: register, login first commit
+[33mfc01460[m[33m ([m[1;31morigin/HoangMinhBranch[m[33m)[m HEAD@{67}: checkout: moving from main to ChechMinhBranch
+[33mfc01460[m[33m ([m[1;31morigin/HoangMinhBranch[m[33m)[m HEAD@{68}: clone: from https://github.com/Harryhoan/PRN231_Group_Project_Repo.git
