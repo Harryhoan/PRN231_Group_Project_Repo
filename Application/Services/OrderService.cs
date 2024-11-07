@@ -22,24 +22,21 @@ namespace Application.Services
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
-		private readonly IOrderRepo _orderRepo;
-		public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IOrderRepo order)
+		public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
-			_orderRepo = order;
 		}
-        public int CountOrders()
-        {
-            return _orderRepo.GetCountOrders();
-        }
-        public async Task<ServiceResponse<PaginationModel<cOrderDTO>>> cGetAllOrder(int page, int pageSize, string search, string filter, string sort)
-        {
-            var response = new ServiceResponse<PaginationModel<cOrderDTO>>();
-
+		public int CountOrders()
+		{
+			return _unitOfWork.OrderRepository.GetCountOrders();
+		}
+		public async Task<ServiceResponse<PaginationModel<cOrderDTO>>> cGetAllOrder(int page, int pageSize, string search, string filter, string sort)
+		{
+			var response = new ServiceResponse<PaginationModel<cOrderDTO>>();
 			try
 			{
-				var orders = await _orderRepo.cGetAllOrders();
+				var orders = await _unitOfWork.OrderRepository.cGetAllOrders();
 				if (!string.IsNullOrEmpty(search))
 				{
 					orders = orders.Where(o =>
@@ -74,31 +71,31 @@ namespace Application.Services
 				response.Message = $"Failed to retrieve orders: {ex.Message}";
 			}
 
-            return response;
-        }
-        private List<cOrderDTO> MapToDTO(IEnumerable<Order> orders)
-        {
-            return orders.Select(order => MapToDTO(order)).ToList();
-        }
-        private cOrderDTO MapToDTO(Order order)
-        {
-            return new cOrderDTO
-            {
-                Id = order.Id,
-                UserId = order.UserId,
-                UserName = order.User.FullName,
-                PaymentDate = order.OrderDate,
-                Status = order.OrderStatus,
-                OrderDetails = order.OrderDetails.Select(detail => new cOrderDetailsResDTO
-                {
-                    Id = detail.Id,
-                    ProductId = detail.KoiId,
-                    Price = detail.Price,
-                    Quantity = detail.Quantity,
+			return response;
+		}
+		private List<cOrderDTO> MapToDTO(IEnumerable<Order> orders)
+		{
+			return orders.Select(order => MapToDTO(order)).ToList();
+		}
+		private cOrderDTO MapToDTO(Order order)
+		{
+			return new cOrderDTO
+			{
+				Id = order.Id,
+				UserId = order.UserId,
+				UserName = order.User.FullName,
+				PaymentDate = order.OrderDate,
+				Status = order.OrderStatus,
+				OrderDetails = order.OrderDetails.Select(detail => new cOrderDetailsResDTO
+				{
+					Id = detail.Id,
+					ProductId = detail.KoiId,
+					Price = detail.Price,
+					Quantity = detail.Quantity,
 					ImageUrls = detail.Koi?.Images?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
 				}).ToList()
-            };
-        }
+			};
+		}
 
 		public async Task<ServiceResponse<aOrderDTO>> GetCart(User user)
 		{
@@ -166,39 +163,39 @@ namespace Application.Services
 		}
 
 		public async Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user)
-        {
-            var response = new ServiceResponse<List<aOrderDTO>>();
-            try
-            {
-                var orders = await _unitOfWork.OrderRepository.aGetOrdersByUser(user.Id);
-                if (orders == null)
-                {
-                    throw new ArgumentNullException(nameof(orders));
-                }
-                var viewOrders = _mapper.Map<List<aOrderDTO>>(orders);
-                foreach (var order in viewOrders)
-                {
-                    foreach (var orderDetail in order.OrderDetails)
-                    {
-                        var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
-                        if (koi == null || koi.Category == null)
-                        {
-                            throw new ArgumentException();
-                        }
-                        orderDetail.CategoryName = koi.Category.Name;
-                    }
-                }
-                response.Data = viewOrders;
-                response.Success = true;
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = $"Failed to get cart: {ex.Message}";
-            }
-            return response;
-        }
-
-       
-    }
+		{
+			var response = new ServiceResponse<List<aOrderDTO>>();
+			try
+			{
+				var orders = await _unitOfWork.OrderRepository.aGetOrdersByUser(user.Id);
+				if (orders == null)
+				{
+					throw new ArgumentNullException(nameof(orders));
+				}
+				if (orders.Count > 0 && orders.First().OrderDetails != null)
+				{
+					foreach (var order in orders)
+					{
+						foreach (var orderDetail in order.OrderDetails)
+						{
+							var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
+							if (koi == null || koi.Category == null)
+							{
+								throw new ArgumentException();
+							}
+						}
+					}
+				}
+				orders.RemoveAll(x => !x.OrderStatus);
+				response.Data = _mapper.Map<List<aOrderDTO>>(orders);
+				response.Success = true;
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = $"Failed to get orders by user: {ex.Message}";
+			}
+			return response;
+		}
+	}
 }
