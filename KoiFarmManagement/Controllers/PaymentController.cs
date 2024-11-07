@@ -18,14 +18,14 @@ namespace KoiFarmManagement.Controllers
         }
         [Authorize(Roles = "Customer")]
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePayment( string returnUrl, string cancelUrl)
+        public async Task<IActionResult> CreatePayment()
         {
             var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
             if (user == null)
             {
                 return Unauthorized();
             }
-            var result = await _paymentService.CreatePaymentAsync(user.Id, returnUrl, cancelUrl);
+            var result = await _paymentService.CreatePaymentAsync(user.Id, Request.Scheme + "://" + Request.Host + "/api/payment/execute", Request.Scheme + "://" + Request.Host);
             if (!result.Success)
             {
                 return BadRequest(result.Message);

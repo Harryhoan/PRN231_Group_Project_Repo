@@ -10,12 +10,12 @@ namespace Application.ViewModels.OrderDetailDTO
 	public class aCreateOrderDetailDTO
 	{
 		[Required(ErrorMessage = "Quantity is required")]
-		[Range(1, int.MaxValue, ErrorMessage = "Quantity must be a non-negative number")]
-		public int Quantity { get; set; }
+		[Range(1, 1, ErrorMessage = "Quantity must be 1")]
+		public int Quantity { get; set; } = 1;
 
 		[Required(ErrorMessage = "Koi is required")]
 		[Range(1, int.MaxValue, ErrorMessage = "Koi's identifier must be a non-negative number")]
-		public int KoiId { get; set; }
+		public int KoiId { get; set; } = 0;
 
 	}
 }

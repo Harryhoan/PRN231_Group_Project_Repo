@@ -104,7 +104,7 @@ namespace Application.Services
 					throw new ArgumentNullException(nameof(orderDetail));
 				}
 				var existingOrder = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(user.Id);
-				if (existingOrder == null || orderDetail.Id != existingOrder.Id)
+				if (existingOrder == null || orderDetail.OrderId != existingOrder.Id)
 				{
                     response.Success = false;
                     response.Message = "Cannot delete order detail";

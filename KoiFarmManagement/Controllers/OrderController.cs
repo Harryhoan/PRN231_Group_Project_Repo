@@ -86,8 +86,8 @@ namespace KoiFarmManagement.Controllers
 		}
 
 		[Authorize(Roles = "Customer")]
-		[HttpDelete]
-		public async Task<IActionResult> DeleteCart(int id)
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteCart([FromRoute] int id)
 		{
 			var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
 			if (user == null)
