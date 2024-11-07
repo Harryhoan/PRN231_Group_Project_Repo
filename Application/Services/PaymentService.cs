@@ -171,12 +171,12 @@ namespace Application.Services
 					return response;
 				}
 
-				if (payment.state != "approved")
-				{
-					response.Success = false;
-					response.Message = "Payment is not approved yet.";
-					return response;
-				}
+				//if (payment.state != "approved")
+				//{
+				//	response.Success = false;
+				//	response.Message = "Payment is not approved yet.";
+				//	return response;
+				//}
 
 				var order = await ValidateOrder(userId);
 
@@ -194,6 +194,7 @@ namespace Application.Services
 				}
 
 				order.OrderStatus = true;
+				order.OrderDate = DateTime.Now;
 				await _unitOfWork.OrderRepository.Update(order);
 				foreach (var orderDetail in order.OrderDetails)
 				{
@@ -217,14 +218,14 @@ namespace Application.Services
 				}
 
 				var cart = new Domain.Entities.Order();
-				order.UserId = userId;
-				order.ShippingFee = 0;
-				order.TotalPrice = 0;
-				await _unitOfWork.OrderRepository.AddAsync(order);
+				cart.UserId = userId;
+				cart.ShippingFee = 0;
+				cart.TotalPrice = 0;
+				await _unitOfWork.OrderRepository.AddAsync(cart);
 
 				response.Success = true;
 				response.Message = "Payment executed successfully.";
-				response.Data = executedPayment; // Return the executed payment object
+				response.Data = executedPayment;
 			}
 			catch (Exception ex)
 			{

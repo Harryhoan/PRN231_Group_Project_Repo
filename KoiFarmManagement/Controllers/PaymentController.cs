@@ -34,9 +34,9 @@ namespace KoiFarmManagement.Controllers
         }
 
         [HttpPost("execute")]
-        public async Task<IActionResult> ExecutePayment(string paymentId, string payerId)
+        public async Task<IActionResult> ExecutePayment(string paymentId, string PayerID)
         {
-            var result = await _paymentService.ExecutePaymentAsync(paymentId, payerId);
+            var result = await _paymentService.ExecutePaymentAsync(paymentId, PayerID);
             if (!result.Success)
             {
                 return BadRequest(result.Message);
