@@ -14,5 +14,6 @@ namespace Application.IRepositories
         Task<User> cGetUserByConfirmationToken(string token);
         Task<User> cGetUserByEmailAddressAndPasswordHash(string email, string passwordHash);
         Task<IEnumerable<User?>> GetAllUsersAdmin();
+        int GetCount();
     }
 }

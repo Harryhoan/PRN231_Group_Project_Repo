@@ -32,5 +32,10 @@ namespace Infrastructure.Repositories
             var orders = await _dbContext.Orders.Include(o => o.User).Include(o => o.OrderDetails).ToListAsync();
             return orders;
         }
+
+        public int GetCountOrders()
+        {
+            return _dbContext.Orders.Count();
+        }
     }
 }

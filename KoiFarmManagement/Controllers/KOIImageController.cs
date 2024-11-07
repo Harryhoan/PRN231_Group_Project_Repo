@@ -75,7 +75,13 @@ namespace KoiFarmManagement.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { imageUrls = uploadedImageUrls });
         }
-
+        /// <summary>
+        /// Update Image Product
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="imageId"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPut("{productId}/images/{imageId}")]
         public async Task<IActionResult> cUpdateProductImage(int productId, int imageId, IFormFile file)
@@ -113,19 +119,32 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(new { imageUrl = productImage.ImageUrl });
         }
+        /// <summary>
+        /// get image infor by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<Image> GetImageInforById(int id)
         {
             return await _context.Images.FindAsync(id);
         }
-
+        /// <summary>
+        /// get all image
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<Image>> GetAllImageInfors()
         {
             return _context.Images.ToList();
-        }      
+        }   
+        /// <summary>
+        /// delete image by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task DeleteProductImage(int id)
@@ -137,7 +156,5 @@ namespace KoiFarmManagement.Controllers
                 await _context.SaveChangesAsync();
             }
         }
-
-
     }
 }

@@ -372,5 +372,10 @@ namespace Application.Services
         {
             return await _koiRepo.GetImagesByKoiIdForAdmin(koiId);
         }
+
+        public int CountKois()
+        {
+            return _koiRepo.GetKoiCount();
+        }
     }
 }

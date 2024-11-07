@@ -48,5 +48,10 @@ namespace Infrastructure.Repositories
                .Where(u => u.Role == "Customer")
                .ToListAsync();
         }
+
+        public int GetCount()
+        {
+            return _dbContext.Users.Count();
+        }
     }
 }

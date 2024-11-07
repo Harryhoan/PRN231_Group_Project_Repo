@@ -184,5 +184,10 @@ namespace Infrastructure.Repositories
            .Where(image => image.KoiId == koiId)
            .ToListAsync();
         }
+
+        public int GetKoiCount()
+        {
+            return _dbContext.Kois.Count();
+        }
     }
 }

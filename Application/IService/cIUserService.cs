@@ -11,6 +11,6 @@ namespace Application.IService
     public interface cIUserService
     {
         Task<ServiceResponse<PaginationModel<cUserDTO>>> GetAllUsersByAdmin(int page, int pageSize, string search, string sort);
-
+        int GetCount();
     }
 }

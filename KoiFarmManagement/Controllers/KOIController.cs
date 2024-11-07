@@ -35,6 +35,12 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
+        /// <summary>
+        /// Update Product By Admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> cUpdateProductAsync(int id, cUpdateProductDTO product)
@@ -112,7 +118,7 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
         /// <summary>
-        /// delete product for admin
+        /// Delete product by admin
         /// </summary>    
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
@@ -140,5 +146,16 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(new { Data = images });
         }
+        /// <summary>
+        /// count koi for admin
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("count")]
+        public IActionResult CountKois()
+        {
+            int koiCount = _koiService.CountKois();
+            return Ok(new { KoiCount = koiCount });
+        }
+
     }
 }

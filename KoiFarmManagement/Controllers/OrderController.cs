@@ -114,7 +114,16 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
-
+        /// <summary>
+        /// count orders for admin
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("count")]
+        public IActionResult CountOrders()
+        {
+            int orderCount = _orderService.CountOrders();
+            return Ok(new { OrderCount = orderCount });
+        }
 
     }
 }

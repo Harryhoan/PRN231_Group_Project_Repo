@@ -56,5 +56,10 @@ namespace Application.Services
             }
             return response;
         }
+
+        public int GetCount()
+        {
+            return _cUserRepo.GetCount();
+        }
     }
 }

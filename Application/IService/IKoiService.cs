@@ -22,5 +22,6 @@ namespace Application.IService
         Task<ServiceResponse<string>> cUpdateProductAsync(cUpdateProductDTO cproduct);
         Task<ServiceResponse<string>> cDeleteProductAsync(int id);
         Task<List<Image>> GetImagesByKoiIdForAdmin(int koiId);
+        int CountKois();
     }
 }

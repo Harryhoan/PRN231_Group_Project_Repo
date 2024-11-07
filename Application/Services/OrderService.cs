@@ -196,5 +196,10 @@ namespace Application.Services
             }
             return response;
         }
+
+        public int CountOrders()
+        {
+            return _orderRepo.GetCountOrders();
+        }
     }
 }

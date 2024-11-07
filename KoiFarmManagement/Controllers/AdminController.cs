@@ -1,4 +1,5 @@
 ﻿using Application.IService;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,15 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
-
+        /// <summary>
+        /// count users for admin
+        /// </summary>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("count-user")]
+        public IActionResult CountKois()
+        {
+            int userCount = _userService.GetCount();
+            return Ok(new { UserCount = userCount });
+        }
     }
 }
