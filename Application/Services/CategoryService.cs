@@ -27,9 +27,9 @@ namespace Application.Services
             return _mapper.Map<Category>(createCategoryDTO);
         }
 
-        private List<dCreateCategoryDTO> MapToCategoryList(List<Category> categories)
+        private List<aViewCategory> MapToCategoryList(List<Category> categories)
         {
-            return _mapper.Map<List<dCreateCategoryDTO>>(categories);
+            return _mapper.Map<List<aViewCategory>>(categories);
         }
         public async Task<ServiceResponse<int>> dCreateCategory(dCreateCategoryDTO createCategoryDTO)
         {
@@ -76,9 +76,9 @@ namespace Application.Services
             }
             return response;
         }
-        public async Task<ServiceResponse<List<dCreateCategoryDTO>>> dGetAllCategory()
+        public async Task<ServiceResponse<List<aViewCategory>>> dGetAllCategory()
         {
-            var response = new ServiceResponse<List<dCreateCategoryDTO>>();
+            var response = new ServiceResponse<List<aViewCategory>>();
 
             try
             {

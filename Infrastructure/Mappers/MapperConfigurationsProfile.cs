@@ -32,7 +32,8 @@ namespace Infrastructure.Mappers
 CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
 			CreateMap<aOrderDTO, Order>()
 			.ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
-			CreateMap<aViewOrderDetailDTO, OrderDetail>();
+			CreateMap<OrderDetail, aViewOrderDetailDTO>()
+			.ForMember(dest => dest.Koi, opt => opt.MapFrom(src => src.Koi));
 			CreateMap<Order, aOrderDTO>()
 				.ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
 			CreateMap<OrderDetail, aViewOrderDetailDTO>();
