@@ -25,7 +25,7 @@ namespace KoiFarmManagement.Controllers
             {
                 return Unauthorized();
             }
-            var result = await _paymentService.CreatePaymentAsync(user.Id, "https://localhost:3000/payment", "https://localhost:3000/payment");
+            var result = await _paymentService.CreatePaymentAsync(user.Id, "http://localhost:3000/payment", "http://localhost:3000/user/cart");
 
 			if (!result.Success)
             {
