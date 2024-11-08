@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Application.IService
 {
-    public interface IPaymentService
-    {
-        Task<ServiceResponse<Payment>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl);
-        Task<ServiceResponse<Payment>> ExecutePaymentAsync(string paymentId, string payerId);
-    }
+	public interface IPaymentService
+	{
+		Task<ServiceResponse<string>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl);
+		Task<ServiceResponse<Payment>> ExecutePaymentAsync(string paymentId, string payerId);
+	}
 }

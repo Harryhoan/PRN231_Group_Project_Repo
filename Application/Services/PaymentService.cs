@@ -30,63 +30,12 @@ namespace Application.Services
 			_mapper = mapper;
 			_unitOfWork = unitOfWork;
 		}
-		public async Task<ServiceResponse<Payment>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl)
+		public async Task<ServiceResponse<string>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl)
 		{
-			var response = new ServiceResponse<Payment>();
+			var response = new ServiceResponse<string>();
 
 			try
 			{
-				// Retrieve the pending order for the user
-				//var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(userId);
-
-				//if (order == null || order.OrderStatus != false)
-				//{
-				//	response.Success = false;
-				//	response.Message = "Order not found.";
-				//	return response;
-				//}
-				//if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
-				//{
-				//	response.Success = false;
-				//	response.Message = "No product found.";
-				//	return response;
-				//}
-
-
-				//int i = 0;
-				//while (i < order.OrderDetails.Count)
-				//{
-				//	var koi = await _unitOfWork.KoiRepo.GetByIdAsync(order.OrderDetails.ElementAt(i).KoiId);
-				//	if (koi != null && koi.Price > 0 && koi.Quantity > 0)
-				//	{
-				//		if (!(order.OrderDetails.ElementAt(i).Price > 0) || order.OrderDetails.ElementAt(i).Price < koi.Price)
-				//		{
-				//			if (order.OrderDetails.ElementAt(i).Quantity < 1)
-				//			{
-				//				order.OrderDetails.ElementAt(i).Quantity = 1;
-				//			}
-				//			order.OrderDetails.ElementAt(i).Price = koi.Price * order.OrderDetails.ElementAt(i).Quantity;
-				//		}
-				//		i++;
-				//		continue;
-				//	}
-				//	var id = order.OrderDetails.ElementAt(i);
-				//	order.OrderDetails.Remove(order.OrderDetails.ElementAt(i));
-				//	await _unitOfWork.OrderDetailRepository.cDeleteTokenAsync(id);
-				//}
-
-				//if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
-				//{
-				//	response.Success = false;
-				//	response.Message = "The cart is invalid.";
-				//	return response;
-				//}
-
-				//if (!(order.TotalPrice > 0))
-				//{
-				//	order.TotalPrice = order.OrderDetails.Sum(o => o.Price);
-				//	await _unitOfWork.OrderRepository.Update(order);
-				//}
 
 				var order = await ValidateOrder(userId);
 				if (order == null)
@@ -133,20 +82,39 @@ namespace Application.Services
 
 				var createdPayment = payment.Create(apiContext);
 
-				// Return the response
-				response.Success = true;
-				response.Message = "Payment created successfully.";
-				response.Data = createdPayment;
+				if (createdPayment != null && createdPayment.links != null)
+				{
+					var approvalLink = createdPayment.links.FirstOrDefault(link => link.rel == "approval_url")?.href;
+
+					if (approvalLink != null)
+					{
+						
+						response.Success = true;
+						response.Message = "Payment created successfully.";
+						response.Data = approvalLink;
+					}
+					else
+					{
+						response.Success = false;
+						response.Message = "Approval URL not found.";
+					}
+				}
+				else
+				{
+					response.Success = false;
+					response.Message = "Failed to create payment.";
+				}
+
 			}
 			catch (PayPalException payPalEx)
 			{
 				response.Success = false;
-				response.Message = $"PayPal error: {payPalEx.Message}";
+				response.Error = $"PayPal error: {payPalEx.Message}";
 			}
 			catch (Exception ex)
 			{
 				response.Success = false;
-				response.Message = $"Failed to create payment: {ex.Message}";
+				response.Error = $"Failed to create payment: {ex.Message}";
 			}
 
 			return response;
@@ -171,12 +139,12 @@ namespace Application.Services
 					return response;
 				}
 
-				//if (payment.state != "approved")
-				//{
-				//	response.Success = false;
-				//	response.Message = "Payment is not approved yet.";
-				//	return response;
-				//}
+				if (payment.state != "created")
+				{
+					response.Success = false;
+					response.Message = "Payment is not approved yet.";
+					return response;
+				}
 
 				var order = await ValidateOrder(userId);
 
@@ -188,7 +156,7 @@ namespace Application.Services
 						var voidResponse = authorization.Void(apiContext);
 					}
 					response.Success = false;
-					response.Message = string.IsNullOrEmpty(errorMessage) ? "The order is invalid. Please try again." : errorMessage;
+					response.Error = string.IsNullOrEmpty(errorMessage) ? "The order is invalid. Please try again." : errorMessage;
 					return response;
 
 				}
@@ -223,9 +191,15 @@ namespace Application.Services
 				cart.TotalPrice = 0;
 				await _unitOfWork.OrderRepository.AddAsync(cart);
 
+				if (executedPayment == null || string.IsNullOrEmpty(executedPayment.state) || executedPayment.state == "failed")
+				{
+					response.Success = false;
+					response.Message = "Payment executed unsuccessfully.";
+					return response;
+				}
+
 				response.Success = true;
-				response.Message = "Payment executed successfully.";
-				response.Data = executedPayment;
+				response.Message = "Payment successful.";
 			}
 			catch (Exception ex)
 			{

@@ -61,7 +61,7 @@ namespace Infrastructure.Repositories
 
 					if (!string.IsNullOrEmpty(filter.Name))
 					{
-						query = query.Where(k => k.Description.Contains(filter.Name));
+						query = query.Where(k => k.Name.Contains(filter.Name));
 					}
 
 					if (!string.IsNullOrEmpty(filter.Description))
