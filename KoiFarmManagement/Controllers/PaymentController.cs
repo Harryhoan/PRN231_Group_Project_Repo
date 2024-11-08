@@ -25,15 +25,16 @@ namespace KoiFarmManagement.Controllers
             {
                 return Unauthorized();
             }
-            var result = await _paymentService.CreatePaymentAsync(user.Id, Request.Scheme + "://" + Request.Host + "/api/Payment/execute", Request.Scheme + "://" + Request.Host);
-            if (!result.Success)
+            var result = await _paymentService.CreatePaymentAsync(user.Id, "https://localhost:3000/payment", "https://localhost:3000/payment");
+
+			if (!result.Success)
             {
                 return BadRequest(result);
             }
             return Ok(result);
         }
 
-        [HttpPost("execute")]
+        [HttpGet("execute")]
         [AllowAnonymous]
         public async Task<IActionResult> ExecutePayment([FromQuery] string paymentId, [FromQuery] string token, [FromQuery] string PayerID)
         {
