@@ -183,6 +183,34 @@ namespace Application.Services
                 return response;
             }
         }
+        public async Task<ServiceResponse<List<ReviewDTO>>> GetListReviewByKoiAsync(int reviewId, User user)
+        {
+            var response = new ServiceResponse<List<ReviewDTO>>();
+
+            try
+            {
+                if (user == null || !(user.Id > 0) || !(reviewId > 0))
+                {
+                    throw new ArgumentException();
+                }
+                var reviews = await _unitOfWork.ReviewRepository.GetReviewByProductIdAsync(reviewId);
+                if (reviews == null)
+                {
+                    response.Success = false;
+                    response.Message = "No reviews found for the specified Koi.";
+                    return response;
+                }
+                response.Data = _mapper.Map<List<ReviewDTO>>(reviews);
+                response.Success = true;
+                response.Message = "Reviews found successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to get reviews: {ex.Message}";
+            }
+            return response;
+        }
 
         public async Task<ServiceResponse<ReviewDTO>> GetReviewByOrderDetailAsync(int orderDetailId, User user)
         {

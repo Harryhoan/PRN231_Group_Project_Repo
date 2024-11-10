@@ -12,5 +12,6 @@ namespace Application.IRepositories
         Task<bool> checkIdExist(int id);
         Task<List<Review>> GetReviewsByUserIdAsync(int userId);
         Task<Review?> GetReviewByOrderDetailAsync(int orderDetailId);
+        Task<Review?> GetReviewByProductIdAsync(int productId);
     }
 }

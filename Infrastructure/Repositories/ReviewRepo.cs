@@ -29,5 +29,9 @@ namespace Infrastructure.Repositories
         {
             return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.OrderDetailId == orderDetailId);
         }
+        public async Task<Review?> GetReviewByProductIdAsync(int productId)
+        {
+            return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.OrderDetail.KoiId == productId);
+        }
     }
 }
