@@ -249,7 +249,19 @@ namespace Application.Services
                 var user = await _orderDetailService.aGetUserByTokenAsync(claims);
                 if (user == null)
                 {
-                    return null;
+                    response.Message = "User not found";
+                    response.Success = false;
+                    return response;
+                }
+                if (user.Email != profileDTO.Email)
+                {
+                    var existEmail = _cUserRepo.cGetByEmailAsync(profileDTO.Email);
+                    if (existEmail != null)
+                    {
+                        response.Message = "Email already exist";
+                        response.Success = false;
+                        return response;
+                    }
                 }
                 // Update the product in the repository
                 MapUser(profileDTO, user);
