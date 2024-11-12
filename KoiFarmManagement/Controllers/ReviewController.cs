@@ -22,6 +22,10 @@ namespace KoiFarmManagement.Controllers
             _orderDetailService = orderDetailService;
         }
 
+        /// <summary>
+        /// Get all review by admin
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpGet] 
         public async Task<IActionResult> GetAllReviewAsync()
@@ -35,6 +39,12 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Adding new review by customer
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="reviewRequest"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpPost]
         public async Task<IActionResult> AddReviewAsync(int orderId, ReviewRequestDTO reviewRequest)
@@ -47,6 +57,11 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
+        /// <summary>
+        /// Admin gets review by reviewId
+        /// </summary>
+        /// <param name="reviewId"></param>
+        /// <returns></returns>
         [HttpGet("{reviewId}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetReviewAsync([FromRoute] int reviewId)
@@ -64,15 +79,20 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
-        [HttpGet("/koi/{reviewId}")]
-        public async Task<IActionResult> GetListReviewByKoiAsync([FromRoute] int reviewId)
+        /// <summary>
+        /// Get review by productId
+        /// </summary>
+        /// <param name="reviewId"></param>
+        /// <returns></returns>
+        [HttpGet("koi/{koiId}")]
+        public async Task<IActionResult> GetReviewByKoiAsync([FromRoute] int koiId)
         {
-            var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-            var result = await _reviewService.GetListReviewByKoiAsync(reviewId, user);
+            //var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
+            //if (user == null)
+            //{
+            //    return Unauthorized();
+            //}
+            var result = await _reviewService.GetReviewByKoiAsync(koiId);
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -80,8 +100,13 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
-        [HttpGet("/orderdetail/{orderDetailId}")]
-        [Authorize(Roles = "Admin")]
+        /// <summary>
+        /// Get review by orderDetailId
+        /// </summary>
+        /// <param name="orderDetailId"></param>
+        /// <returns></returns>
+        [HttpGet("orderdetail/{orderDetailId}")]
+        [Authorize(Roles = "Customer, Admin, Staff")]
         public async Task<IActionResult> GetReviewByOrderDetailAsync([FromRoute] int orderDetailId)
         {
             var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
@@ -98,12 +123,17 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
-        [HttpGet("/user/{userId}")]
+        /// <summary>
+        /// Get review by customerId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("user")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> GetReviewByUserAsync([FromRoute] int userId)
+        public async Task<IActionResult> GetReviewByUserAsync()
         {
             var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
-            if (user == null || (user.Role == "Customer" && user.Id == userId))
+            if (user == null)
             {
                 return Unauthorized();
             }
@@ -117,7 +147,11 @@ namespace KoiFarmManagement.Controllers
         }
 
 
-
+        /// <summary>
+        /// Customer Delete review 
+        /// </summary>
+        /// <param name="reviewId"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpDelete]
         public async Task<IActionResult> DeleteReviewAsync(int reviewId)
@@ -130,6 +164,12 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Customer edit their review 
+        /// </summary>
+        /// <param name="review"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> EditReview([FromBody] aEditReviewDTO review)

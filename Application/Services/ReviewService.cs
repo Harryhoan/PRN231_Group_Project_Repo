@@ -1,9 +1,11 @@
 ﻿using Application.IRepositories;
 using Application.IService;
 using Application.ServiceResponse;
+using Application.ViewModels.ImageDTO;
 using Application.ViewModels.ReviewDTO;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,24 +102,44 @@ namespace Application.Services
             var response = new ServiceResponse<List<ReviewDTO>>();
             try
             {
-                var review = await _unitOfWork.ReviewRepository.GetAllAsync();
-                if (review == null)
+                var reviews = await _unitOfWork.ReviewRepository.GetAllAsync();
+                if (reviews == null || reviews.Count == 0)
                 {
                     response.Success = false;
-                    response.Message = "No review exist.";
+                    response.Message = "No reviews exist.";
                     return response;
                 }
-                response.Data = _mapper.Map<List<ReviewDTO>>(review);
+
+                var reviewDTOs = new List<ReviewDTO>();
+                foreach (var review in reviews)
+                {
+                    var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(review.OrderDetailId);
+                    if (orderDetail != null)
+                    {
+                        var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+                        var koiImages = await _unitOfWork.ImageRepository.aGetImagesByKoiIdAsync(orderDetail.KoiId);
+
+                        var reviewDTO = _mapper.Map<ReviewDTO>(review);
+                        reviewDTO.KoiName = koi.Name;
+                        reviewDTO.KoiImage = koiImages.FirstOrDefault()?.ImageUrl;
+
+                        reviewDTOs.Add(reviewDTO);
+                    }
+                }
+
+                response.Data = reviewDTOs;
                 response.Success = true;
+                response.Message = "Reviews retrieved successfully.";
                 return response;
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = $"Failed to get review: {ex.Message}";
+                response.Message = $"Failed to get reviews: {ex.Message}";
                 return response;
             }
         }
+
 
         public async Task<ServiceResponse<List<ReviewDTO>>> GetReviewsByCustomerId(int userId)
         {
@@ -126,23 +148,43 @@ namespace Application.Services
             try
             {
                 var reviews = await _unitOfWork.ReviewRepository.GetReviewsByUserIdAsync(userId);
-                if (reviews == null)
+                if (reviews == null || reviews.Count == 0)
                 {
                     response.Success = false;
-                    response.Message = "No review exist.";
+                    response.Message = "No reviews exist.";
                     return response;
                 }
-                response.Data = _mapper.Map<List<ReviewDTO>>(reviews);
+
+                var reviewDTOs = new List<ReviewDTO>();
+                foreach (var review in reviews)
+                {
+                    var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(review.OrderDetailId);
+                    if (orderDetail != null)
+                    {
+                        var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+                        var koiImages = await _unitOfWork.ImageRepository.aGetImagesByKoiIdAsync(orderDetail.KoiId);
+
+                        var reviewDTO = _mapper.Map<ReviewDTO>(review);
+                        reviewDTO.KoiName = koi.Name;
+                        reviewDTO.KoiImage = koiImages.FirstOrDefault()?.ImageUrl;
+
+                        reviewDTOs.Add(reviewDTO);
+                    }
+                }
+
+                response.Data = reviewDTOs;
                 response.Success = true;
+                response.Message = "Reviews retrieved successfully.";
                 return response;
             }
             catch (Exception ex)
             {
                 response.Success = false;
-                response.Message = $"Failed to get review: {ex.Message}";
+                response.Message = $"Failed to get reviews: {ex.Message}";
                 return response;
             }
         }
+
 
         public async Task<ServiceResponse<ReviewDTO>> GetReviewAsync(int reviewId, User user)
         {
@@ -150,10 +192,11 @@ namespace Application.Services
 
             try
             {
-                if (user == null || !(user.Id > 0) || !(reviewId > 0))
+                if (user == null || user.Id <= 0 || reviewId <= 0)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException("Invalid user or review ID.");
                 }
+
                 var review = await _unitOfWork.ReviewRepository.GetByIdAsync(reviewId);
                 if (review == null)
                 {
@@ -161,17 +204,29 @@ namespace Application.Services
                     response.Message = "Review not found";
                     return response;
                 }
-                if (user.Role == "Customer")
+
+                var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(review.OrderDetailId);
+                if (orderDetail == null)
                 {
-                    var existingOrderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(review.OrderDetailId);
-                    if (existingOrderDetail == null || !(await _unitOfWork.OrderDetailRepository.CheckOrderDetailBelongingToUser(existingOrderDetail.Id, user.Id)))
-                    {
-                        response.Success = false;
-                        response.Message = "Unauthorized access";
-                        return response;
-                    }
+                    response.Success = false;
+                    response.Message = "Order detail not found";
+                    return response;
                 }
-                response.Data = _mapper.Map<ReviewDTO>(review);
+
+                var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+
+                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
+
+                var reviewResponse = _mapper.Map<ReviewDTO>(review);
+                response.Data = new ReviewDTO
+                {
+                    KoiName = koi.Name,
+                    KoiImage = koiImage.ImageUrl,
+                    Rating = reviewResponse.Rating,
+                    Comment = reviewResponse.Comment,
+                    Id = reviewResponse.Id,
+                    OrderDetailId = reviewResponse.OrderDetailId
+                };
                 response.Success = true;
                 response.Message = "Review found successfully";
                 return response;
@@ -183,16 +238,12 @@ namespace Application.Services
                 return response;
             }
         }
-        public async Task<ServiceResponse<List<ReviewDTO>>> GetListReviewByKoiAsync(int reviewId, User user)
+        public async Task<ServiceResponse<ReviewDTO>> GetReviewByKoiAsync(int reviewId)
         {
-            var response = new ServiceResponse<List<ReviewDTO>>();
+            var response = new ServiceResponse<ReviewDTO>();
 
             try
             {
-                if (user == null || !(user.Id > 0) || !(reviewId > 0))
-                {
-                    throw new ArgumentException();
-                }
                 var reviews = await _unitOfWork.ReviewRepository.GetReviewByProductIdAsync(reviewId);
                 if (reviews == null)
                 {
@@ -200,7 +251,28 @@ namespace Application.Services
                     response.Message = "No reviews found for the specified Koi.";
                     return response;
                 }
-                response.Data = _mapper.Map<List<ReviewDTO>>(reviews);
+                var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(reviews.OrderDetailId);
+                if (orderDetail == null)
+                {
+                    response.Success = false;
+                    response.Message = "Order detail not found";
+                    return response;
+                }
+
+                var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+
+                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
+
+                var reviewResponse = _mapper.Map<ReviewDTO>(reviews);
+                response.Data = new ReviewDTO
+                {
+                    KoiName = koi.Name,
+                    KoiImage = koiImage.ImageUrl,
+                    Rating = reviewResponse.Rating,
+                    Comment = reviewResponse.Comment,
+                    Id = reviewResponse.Id,
+                    OrderDetailId = reviewResponse.OrderDetailId
+                };
                 response.Success = true;
                 response.Message = "Reviews found successfully";
             }
@@ -229,17 +301,28 @@ namespace Application.Services
                     response.Message = "Review not found";
                     return response;
                 }
-                if (user.Role == "Customer")
+                var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(review.OrderDetailId);
+                if (orderDetail == null)
                 {
-                    var existingOrderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(review.OrderDetailId);
-                    if (existingOrderDetail == null || !(await _unitOfWork.OrderDetailRepository.CheckOrderDetailBelongingToUser(existingOrderDetail.Id, user.Id)))
-                    {
-                        response.Success = false;
-                        response.Message = "Unauthorized access";
-                        return response;
-                    }
+                    response.Success = false;
+                    response.Message = "Order detail not found";
+                    return response;
                 }
-                response.Data = _mapper.Map<ReviewDTO>(review);
+
+                var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+
+                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
+
+                var reviewResponse = _mapper.Map<ReviewDTO>(review);
+                response.Data = new ReviewDTO
+                {
+                    KoiName = koi.Name,
+                    KoiImage = koiImage.ImageUrl,
+                    Rating = reviewResponse.Rating,
+                    Comment = reviewResponse.Comment,
+                    Id = reviewResponse.Id,
+                    OrderDetailId = reviewResponse.OrderDetailId
+                };
                 response.Success = true;
                 response.Message = "Review found successfully";
                 return response;
@@ -279,13 +362,31 @@ namespace Application.Services
                     response.Message = "Order has already had a review.";
                     return response;
                 }
-
+                
                 review.OrderDetailId = orderId;
                 review.Rating = reviewRequest.Rating;
                 review.Comment = reviewRequest.Comment;
 
                 await _unitOfWork.ReviewRepository.AddAsync(review);
-                response.Data = _mapper.Map<ReviewDTO>(review);
+
+                orderDetail.IsReviewed = true;
+                await _unitOfWork.SaveChangeAsync();
+
+                var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+
+
+                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
+
+                var reviewResponse = _mapper.Map<ReviewDTO>(review);
+                response.Data = new ReviewDTO
+                {
+                    KoiName = koi.Name,
+                    KoiImage = koiImage.ImageUrl,
+                    Rating = reviewResponse.Rating,
+                    Comment = reviewResponse.Comment,
+                    Id = reviewResponse.Id,
+                    OrderDetailId = reviewResponse.OrderDetailId
+                };
                 response.Success = true;
                 response.Message = "Review added successfully";
             }
