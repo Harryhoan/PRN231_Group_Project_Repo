@@ -20,7 +20,8 @@ namespace Infrastructure
         private readonly IReviewRepo _reviewRepo;
         private readonly IOrderDetailRepo _orderDetailRepo;
         private readonly IImageRepo _imageRepo;
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository,
+        private readonly IAddressRepo _addressRepo;
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, IAddressRepo addressRepo,
             ITokenRepo tokenRepo, ICategoryRepo categoryRepo, IKoiRepo koiRepo, IOrderRepo orderRepo, IReviewRepo reviewRepo, IOrderDetailRepo orderDetailRepo, IImageRepo imageRepo)
         {
             //if (apiContext == null) throw new ArgumentNullException(nameof(apiContext));
@@ -29,6 +30,7 @@ namespace Infrastructure
             //_apiContext = apiContext;
             //_userRepository = userRepository;
             //_tokenRepo = tokenRepo;
+            _addressRepo = addressRepo ?? throw new ArgumentNullException(nameof(addressRepo));
             _apiContext = apiContext ?? throw new ArgumentNullException(nameof(apiContext));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _tokenRepo = tokenRepo ?? throw new ArgumentNullException(nameof(tokenRepo));
@@ -42,8 +44,9 @@ namespace Infrastructure
 		public IUserRepo UserRepository => _userRepository;
 
 		public ITokenRepo TokenRepo => _tokenRepo;
+        public IAddressRepo addressRepo => _addressRepo;
 
-		public ICategoryRepo CategoryRepo => _categoryRepo;
+        public ICategoryRepo CategoryRepo => _categoryRepo;
 
 		public IKoiRepo KoiRepo => _koiRepo;
 

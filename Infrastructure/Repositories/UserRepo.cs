@@ -1,6 +1,7 @@
 ﻿using Application.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Mozilla;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,14 @@ namespace Infrastructure.Repositories
         public async Task<bool> cCheckEmailAddressExisted(string sEmail)
         {
             return await _dbContext.Users.AnyAsync(e => e.Email == sEmail);
+        }
+        public async Task<List<Address>> GetAddresses(int id)
+        {
+            return await _dbContext.Addresses.Where(a=>a.UserId == id).ToListAsync();
+        }
+        public async Task<Address> GetAddressById(int id)
+        {
+            return await _dbContext.Addresses.FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<User?> cGetByEmailAsync(string sEmail) => await _dbSet.FirstOrDefaultAsync(u => u.Email == sEmail);

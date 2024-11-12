@@ -31,6 +31,7 @@ namespace Infrastructure
             services.AddScoped<IReviewRepo, ReviewRepo>();
             services.AddScoped<IOrderDetailRepo, OrderDetailRepo>();
             services.AddScoped<IImageRepo, ImageRepo>();
+            services.AddScoped<IAddressRepo, AddressRepo>();
             return services;
         }
     }
