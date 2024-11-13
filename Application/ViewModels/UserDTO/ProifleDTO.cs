@@ -29,6 +29,9 @@ namespace Application.ViewModels.UserDTO
         [Required(ErrorMessage = "Province is required.")]
         [StringLength(100, ErrorMessage = "Province can't be longer than 100 characters.")]
         public string Province { get; set; }
+        [Required(ErrorMessage = "District is required.")]
+        [StringLength(100, ErrorMessage = "District can't be longer than 100 characters.")]
+        public string District { get; set; }
 
         [Required(ErrorMessage = "Street is required.")]
         [StringLength(200, ErrorMessage = "Street can't be longer than 200 characters.")]

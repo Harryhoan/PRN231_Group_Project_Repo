@@ -63,7 +63,6 @@ namespace Application.Services
             }
             return response;
         }
-
         public async Task<ServiceResponse<List<AddressDTO>>> GetAddressByUser(ClaimsPrincipal claims)
         {
             var response = new ServiceResponse<List<AddressDTO>>();
@@ -111,6 +110,7 @@ namespace Application.Services
 
                 Address newAddress = new Address
                 {
+                    District = addressDTO.District,
                     Province = addressDTO.Province,
                     Ward = addressDTO.Ward,
                     Street = addressDTO.Street,
@@ -237,6 +237,7 @@ namespace Application.Services
         {
             address.Id = addressDTO.Id;
             address.Ward = addressDTO.Ward;
+            address.District = addressDTO.District;
             address.Province = addressDTO.Province;
             address.Street = addressDTO.Street;
         }
@@ -258,7 +259,6 @@ namespace Application.Services
                         response.Message = "Email cant be change";
                         response.Success = false;
                         return response;
-                    
                 }
                 // Update the product in the repository
                 MapUser(profileDTO, user);
