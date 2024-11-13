@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20241113090633_AddingAddressId")]
-    partial class AddingAddressId
+    [Migration("20241113102231_addAddressId")]
+    partial class addAddressId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

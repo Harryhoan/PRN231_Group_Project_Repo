@@ -20,6 +20,7 @@ namespace Domain.Entities
         public User User { get; set; }
 
         // Navigation properties
+        public Address Address { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

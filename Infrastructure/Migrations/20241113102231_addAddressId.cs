@@ -4,7 +4,7 @@
 
 namespace Infrastructure.Migrations
 {
-    public partial class AddingAddressId : Migration
+    public partial class addAddressId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
