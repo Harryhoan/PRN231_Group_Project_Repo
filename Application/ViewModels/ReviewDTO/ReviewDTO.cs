@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Entities;
 
 namespace Application.ViewModels.ReviewDTO
 {
@@ -13,5 +8,7 @@ namespace Application.ViewModels.ReviewDTO
         public string Comment { get; set; } = string.Empty;
         public int Rating { get; set; }
         public int OrderDetailId { get; set; }
+        public string KoiName { get; set; }
+        public string KoiImage { get; set; }
     }
 }

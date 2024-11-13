@@ -12,6 +12,7 @@ namespace Application.ViewModels.OrderDetailDTO
 		public int Id { get; set; }
 		public decimal Price { get; set; }
 		public int Quantity { get; set; }
-		public dViewKoiDTO Koi { get; set; } = new();
+		public bool IsReviewed { get; set; }
+        public dViewKoiDTO Koi { get; set; } = new();
 	}
 }

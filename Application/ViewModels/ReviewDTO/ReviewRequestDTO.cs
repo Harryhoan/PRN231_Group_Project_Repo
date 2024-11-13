@@ -9,8 +9,6 @@ namespace Application.ViewModels.ReviewDTO
 {
     public class ReviewRequestDTO
     {
-        [Required(ErrorMessage = "Id is required")]
-        public int Id { get; set; }
         [Required(ErrorMessage = "Comment is required")]
         [StringLength(100, ErrorMessage = "Comment can't be longer than 100 characters")]
         public string Comment { get; set; } = string.Empty;

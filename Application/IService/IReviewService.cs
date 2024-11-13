@@ -18,6 +18,6 @@ namespace Application.IService
         Task<ServiceResponse<ReviewDTO>> aEditReviewAsync(aEditReviewDTO review, User user);
         Task<ServiceResponse<ReviewDTO>> GetReviewByOrderDetailAsync(int orderDetailId, User user);
         Task<ServiceResponse<List<ReviewDTO>>> GetReviewsByCustomerId(int userId);
-        Task<ServiceResponse<List<ReviewDTO>>> GetListReviewByKoiAsync(int reviewId, User user);
+        Task<ServiceResponse<ReviewDTO>> GetReviewByKoiAsync(int reviewId);
     }
 }

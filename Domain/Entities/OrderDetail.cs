@@ -15,7 +15,7 @@ namespace Domain.Entities
         // Foreign keys
         public int KoiId { get; set; }
         public Koi Koi { get; set; }
-
+        public bool IsReviewed { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
 
