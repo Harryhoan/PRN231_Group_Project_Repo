@@ -119,7 +119,7 @@ namespace Application.Services
 					}
 					orderDetail.Koi = koi;					
 				}
-				var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId);
+				var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
 				if (address == null)
 				{
                     throw new ArgumentException(nameof(address));
@@ -160,7 +160,7 @@ namespace Application.Services
 							}
 							orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId);
+                        var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
                         if (address == null)
                         {
                             throw new ArgumentException(nameof(address));
@@ -202,7 +202,7 @@ namespace Application.Services
                             }
                             orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId);
+                        var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
                         if (address == null)
                         {
                             throw new ArgumentException(nameof(address));
