@@ -119,14 +119,17 @@ namespace Application.Services
 					}
 					orderDetail.Koi = koi;					
 				}
-				var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
-				if (address == null)
+                var orderDto = _mapper.Map<aOrderDTO>(order);
+                if (order.AddressId != null)
 				{
-                    throw new ArgumentException(nameof(address));
+					var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
+					if (address == null)
+					{
+						throw new ArgumentException(nameof(address));
+					}
+                    orderDto.Address = _mapper.Map<AddressDTO>(address);
                 }
-				var orderDto = _mapper.Map<aOrderDTO>(order);
-				orderDto.Address = _mapper.Map<AddressDTO>(address);
-				response.Data = orderDto;
+                response.Data = orderDto;
 				response.Success = true;
 			}
 			catch (Exception ex)
@@ -160,12 +163,15 @@ namespace Application.Services
 							}
 							orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
-                        if (address == null)
-                        {
-                            throw new ArgumentException(nameof(address));
-                        }
-						order.Address = address;
+						if (order.AddressId != null)
+						{
+							var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
+							if (address == null)
+							{
+								throw new ArgumentException(nameof(address));
+							}
+							order.Address = address;
+						}
                     }
                 }
 				response.Data = _mapper.Map<List<aOrderDTO>>(orders);
@@ -202,12 +208,15 @@ namespace Application.Services
                             }
                             orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
-                        if (address == null)
-                        {
-                            throw new ArgumentException(nameof(address));
-                        }
-                        order.Address = address;
+						if (order.AddressId != null)
+						{
+							var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
+							if (address == null)
+							{
+								throw new ArgumentException(nameof(address));
+							}
+							order.Address = address;
+						}
                     }
                 }
 				orders.RemoveAll(x => !x.OrderStatus);

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.ViewModels.OrderDTO
@@ -15,7 +16,9 @@ namespace Application.ViewModels.OrderDTO
 		public decimal ShippingFee { get; set; }
 		public decimal TotalPrice { get; set; }
 		public int UserId { get; set; }
-		public UserDTO.AddressDTO Address { get; set; } = new();
+
+		[JsonIgnore]
+		public UserDTO.AddressDTO? Address { get; set; } = null;
 		public List<aViewOrderDetailDTO> OrderDetails { get; set; } = new List<aViewOrderDetailDTO>();
 
 	}
