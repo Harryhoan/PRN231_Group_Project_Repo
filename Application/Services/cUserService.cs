@@ -253,15 +253,12 @@ namespace Application.Services
                     response.Success = false;
                     return response;
                 }
-                if (user.Email != profileDTO.Email)
+                if (profileDTO.Email != user.Email)
                 {
-                    var existEmail = _cUserRepo.cGetByEmailAsync(profileDTO.Email);
-                    if (existEmail != null)
-                    {
-                        response.Message = "Email already exist";
+                        response.Message = "Email cant be change";
                         response.Success = false;
                         return response;
-                    }
+                    
                 }
                 // Update the product in the repository
                 MapUser(profileDTO, user);
