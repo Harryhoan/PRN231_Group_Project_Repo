@@ -15,6 +15,7 @@ namespace Application.ViewModels.OrderDTO
 		public decimal ShippingFee { get; set; }
 		public decimal TotalPrice { get; set; }
 		public int UserId { get; set; }
+		public UserDTO.AddressDTO Address { get; set; } = new();
 		public List<aViewOrderDetailDTO> OrderDetails { get; set; } = new List<aViewOrderDetailDTO>();
 
 	}

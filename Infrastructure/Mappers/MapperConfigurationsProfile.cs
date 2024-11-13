@@ -20,6 +20,7 @@ namespace Infrastructure.Mappers
     {
         public MapperConfigurationsProfile()
         {
+            CreateMap<Address, AddressDTO>().ReverseMap();
             CreateMap<User, cRegisterDTO>().ReverseMap();
             CreateMap<Koi, cGetKoiByIdAdmin>().ReverseMap();
             CreateMap<User, cLoginUserDTO>().ReverseMap();
@@ -29,18 +30,17 @@ namespace Infrastructure.Mappers
             CreateMap<Review, ReviewDTO>().ReverseMap();
             CreateMap<Category, dCreateCategoryDTO>().ReverseMap();
             CreateMap<Koi, cUpdateProductDTO>().ReverseMap();
-CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
-			CreateMap<aOrderDTO, Order>()
-			.ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
-			CreateMap<OrderDetail, aViewOrderDetailDTO>()
-			.ForMember(dest => dest.Koi, opt => opt.MapFrom(src => src.Koi));
-			CreateMap<Order, aOrderDTO>()
-				.ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
-			CreateMap<OrderDetail, aViewOrderDetailDTO>();
+            CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
+            CreateMap<OrderDetail, aViewOrderDetailDTO>()
+                .ForMember(dest => dest.Koi, opt => opt.MapFrom(src => src.Koi));
+            CreateMap<OrderDetail, aViewOrderDetailDTO>();
+            CreateMap<Order, aOrderDTO>()
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails));
+            CreateMap<aOrderDTO, Order>();
             CreateMap<aEditReviewDTO, Review>().ReverseMap();
             CreateMap<aViewCategory, Category>().ReverseMap();
             CreateMap<User, ProfileDTO>().ReverseMap();
-            CreateMap<Address, AddressDTO>().ReverseMap();
             CreateMap<Review, ReviewRequestDTO>().ReverseMap();
             CreateMap<Order, cOrderDTO>()
                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User!.FullName))
@@ -49,6 +49,7 @@ CreateMap<OrderDetail, aCreateOrderDetailDTO>().ReverseMap();
             CreateMap<Image, aImageDTO>().ReverseMap();
             CreateMap<Koi, dViewKoiDTO>().ForMember(dest => dest.CategoryName,
                   opt => opt.MapFrom(src => src.Category.Name)).ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images)).ReverseMap();
+            CreateMap<Address, AddressDTO>().ReverseMap();
         }
-    }	
+    }
 }
