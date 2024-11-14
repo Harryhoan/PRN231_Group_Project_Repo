@@ -17,7 +17,5 @@ namespace Domain.Entities
         // Foreign key
         public int UserId { get; set; }
         public User User { get; set; }
-        // Navigation property
-        public Order Order { get; set; }
     }
 }

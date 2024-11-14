@@ -402,12 +402,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Address", b =>
-                {
-                    b.Navigation("Order")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Navigation("Kois");
