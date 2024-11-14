@@ -191,7 +191,7 @@ namespace Application.Services
                 if (address.UserId != user.Id)
                 {
                     response.Success = false;
-                    response.Message = "You dont have permision to delete this address";
+                    response.Message = "You dont have permision to update this address";
                     return response;
                 }
                 // Update the product in the repository

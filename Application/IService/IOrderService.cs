@@ -15,6 +15,7 @@ namespace Application.IService
 		Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user);
         Task<ServiceResponse<PaginationModel<cOrderDTO>>> cGetAllOrder(int page, int pageSize, string search, string filter, string sort);
 		Task<ServiceResponse<List<aOrderDTO>>> GetAllOrders();
+		Task<ServiceResponse<string>> UpdateAddress(int addressId,User user);
         int CountOrders();
     }
 }

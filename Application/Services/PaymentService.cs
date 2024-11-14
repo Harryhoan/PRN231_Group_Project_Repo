@@ -37,11 +37,12 @@ namespace Application.Services
 			try
 			{
 
-				var order = await ValidateOrder(userId);
+				var orderitem = await ValidateOrder(userId);
+				var order = orderitem.Item1;
 				if (order == null)
 				{
 					response.Success = false;
-					response.Message = string.IsNullOrEmpty(errorMessage) ? "The order is invalid. Please try again." : errorMessage;
+					response.Message = string.IsNullOrEmpty(orderitem.Item2) ? "The order is invalid. Please try again." : orderitem.Item2;
 					return response;
 				}
 
@@ -146,9 +147,10 @@ namespace Application.Services
 					return response;
 				}
 
-				var order = await ValidateOrder(userId);
+                var orderitem = await ValidateOrder(userId);
+                var order = orderitem.Item1;
 
-				if (!string.IsNullOrEmpty(errorMessage) || order == null || order.Id != orderId || order.OrderDetails == null || !(order.OrderDetails.Count > 0))
+                if (!string.IsNullOrEmpty(errorMessage) || order == null || order.Id != orderId || order.OrderDetails == null || !(order.OrderDetails.Count > 0))
 				{
 					if (payment.state == "authorized")
 					{
@@ -156,8 +158,8 @@ namespace Application.Services
 						var voidResponse = authorization.Void(apiContext);
 					}
 					response.Success = false;
-					response.Error = string.IsNullOrEmpty(errorMessage) ? "The order is invalid. Please try again." : errorMessage;
-					return response;
+                    response.Message = string.IsNullOrEmpty(orderitem.Item2) ? "The order is invalid. Please try again." : orderitem.Item2;
+                    return response;
 
 				}
 
@@ -212,21 +214,21 @@ namespace Application.Services
 
 		private string errorMessage = string.Empty;
 
-		public async Task<Domain.Entities.Order?> ValidateOrder(int userId)
-		{
-			try
+        public async Task<(Domain.Entities.Order?, string)> ValidateOrder(int userId)
+        {
+            try
 			{
 				var order = await _unitOfWork.OrderRepository.aGetPendingOrderByUserIdAsync(userId);
 
 				if (order == null || order.OrderStatus != false)
 				{
 					errorMessage = "The details of the order have been changed and the payment cannot be proceeded with.";
-					return null;
-				}
-				if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
+                    return (null, errorMessage);
+                }
+                if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
 				{
 					errorMessage = "No product found.";
-					return null;
+					return(null,errorMessage);
 				}
 
 				int i = 0;
@@ -256,24 +258,29 @@ namespace Application.Services
 				if (order.OrderDetails == null || order.OrderDetails.Count <= 0)
 				{
 					errorMessage = "The cart is invalid.";
-					return null;
-				}
+                    return (null, errorMessage);
+                }
 
-				if (!(order.TotalPrice > 0))
+                if (!(order.TotalPrice > 0))
 				{
 					order.TotalPrice = order.OrderDetails.Sum(o => o.Price);
 					await _unitOfWork.OrderRepository.Update(order);
 					errorMessage = "The details of the order have been changed. Please try again.";
-				}
-
-				return order;
+                    return (null, errorMessage);
+                }
+                if (order.AddressId == null)
+				{
+                    errorMessage = "Choose an address before payment.";
+                    return (null, errorMessage);
+                }
+                return(order,string.Empty);
 			}
 			catch (Exception ex)
 			{
 				errorMessage = ex.Message;
-				return null;
-			}
-		}
+                return (null, errorMessage);
+            }
+        }
 	}
 
 }

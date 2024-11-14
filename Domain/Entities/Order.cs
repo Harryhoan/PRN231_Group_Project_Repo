@@ -13,13 +13,9 @@ namespace Domain.Entities
         public bool OrderStatus { get; set; }
         public decimal ShippingFee { get; set; }
         public decimal TotalPrice { get; set; }
-        public int? AddressId { get; set; }
-        // Foreign keys
-
+        public int? AddressId { get; set; } = null;
         public int UserId { get; set; }
         public User User { get; set; }
-
-        // Navigation properties
         public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

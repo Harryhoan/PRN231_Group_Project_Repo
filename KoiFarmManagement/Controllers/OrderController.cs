@@ -84,8 +84,24 @@ namespace KoiFarmManagement.Controllers
 			}
 			return Ok(result);
 		}
+        [Authorize(Roles = "Customer")]
+        [HttpPut("Address/{id}")]
+        public async Task<IActionResult> UpdateOrderAddress([FromRoute] int id)
+        {
+            var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var result = await _orderService.UpdateAddress(id, user);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
-		[Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteCart([FromRoute] int id)
 		{
