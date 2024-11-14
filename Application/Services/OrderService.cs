@@ -11,6 +11,7 @@ using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
 using PayPal.Api;
+using PayPal.Api.OpenIdConnect;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -119,15 +120,21 @@ namespace Application.Services
                     }
                     orderDetail.Koi = koi;
                 }
-                var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
-                if (address == null)
+                if(order.AddressId == null)
                 {
-                    throw new ArgumentException(nameof(address));
+                    var orderDto = _mapper.Map<aOrderDTO>(order);
+                    response.Data = orderDto;
+                    response.Success = true;
+
                 }
-                var orderDto = _mapper.Map<aOrderDTO>(order);
-                orderDto.Address = _mapper.Map<AddressDTO>(address);
-                response.Data = orderDto;
-                response.Success = true;
+                else
+                {
+                    var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
+                    var orderDto = _mapper.Map<aOrderDTO>(order);
+                    orderDto.Address = _mapper.Map<AddressDTO>(address);
+                    response.Data = orderDto;
+                    response.Success = true;
+                }
             }
             catch (Exception ex)
             {
