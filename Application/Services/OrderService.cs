@@ -7,10 +7,8 @@ using Application.ViewModels.CategoryDTO;
 using Application.ViewModels.KoiDTO;
 using Application.ViewModels.OrderDetailDTO;
 using Application.ViewModels.OrderDTO;
-using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
-using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -75,11 +73,11 @@ namespace Application.Services
 
 			return response;
 		}
-		private List<cOrderDTO> MapToDTO(IEnumerable<Domain.Entities.Order> orders)
+		private List<cOrderDTO> MapToDTO(IEnumerable<Order> orders)
 		{
 			return orders.Select(order => MapToDTO(order)).ToList();
 		}
-		private cOrderDTO MapToDTO(Domain.Entities.Order order)
+		private cOrderDTO MapToDTO(Order order)
 		{
 			return new cOrderDTO
 			{
@@ -115,21 +113,10 @@ namespace Application.Services
 					var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
 					if (koi == null || koi.Category == null)
 					{
-						throw new ArgumentException(nameof(koi));
+						throw new ArgumentException();
 					}
-					orderDetail.Koi = koi;					
 				}
-                var orderDto = _mapper.Map<aOrderDTO>(order);
-                if (order.AddressId != null)
-				{
-					var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
-					if (address == null)
-					{
-						throw new ArgumentException(nameof(address));
-					}
-                    orderDto.Address = _mapper.Map<AddressDTO>(address);
-                }
-                response.Data = orderDto;
+				response.Data = _mapper.Map<aOrderDTO>(order);
 				response.Success = true;
 			}
 			catch (Exception ex)
@@ -159,21 +146,11 @@ namespace Application.Services
 							var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
 							if (koi == null || koi.Category == null)
 							{
-								throw new ArgumentException(nameof(koi));
+								throw new ArgumentException();
 							}
-							orderDetail.Koi = koi;
-                        }
-						if (order.AddressId != null)
-						{
-							var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
-							if (address == null)
-							{
-								throw new ArgumentException(nameof(address));
-							}
-							order.Address = address;
 						}
-                    }
-                }
+					}
+				}
 				response.Data = _mapper.Map<List<aOrderDTO>>(orders);
 				response.Success = true;
 			}
@@ -199,26 +176,16 @@ namespace Application.Services
 				{
 					foreach (var order in orders)
 					{
-                        foreach (var orderDetail in order.OrderDetails)
-                        {
-                            var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
-                            if (koi == null || koi.Category == null)
-                            {
-                                throw new ArgumentException(nameof(koi));
-                            }
-                            orderDetail.Koi = koi;
-                        }
-						if (order.AddressId != null)
+						foreach (var orderDetail in order.OrderDetails)
 						{
-							var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
-							if (address == null)
+							var koi = await _unitOfWork.KoiRepo.dGetKoiWithCategoryAndImages(orderDetail.KoiId);
+							if (koi == null || koi.Category == null)
 							{
-								throw new ArgumentException(nameof(address));
+								throw new ArgumentException();
 							}
-							order.Address = address;
 						}
-                    }
-                }
+					}
+				}
 				orders.RemoveAll(x => !x.OrderStatus);
 				response.Data = _mapper.Map<List<aOrderDTO>>(orders);
 				response.Success = true;

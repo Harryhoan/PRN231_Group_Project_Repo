@@ -44,7 +44,7 @@ namespace Infrastructure
 		public IUserRepo UserRepository => _userRepository;
 
 		public ITokenRepo TokenRepo => _tokenRepo;
-        public IAddressRepo AddressRepo => _addressRepo;
+        public IAddressRepo addressRepo => _addressRepo;
 
         public ICategoryRepo CategoryRepo => _categoryRepo;
 

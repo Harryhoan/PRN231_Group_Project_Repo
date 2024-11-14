@@ -14,7 +14,8 @@ namespace Application.ViewModels.OrderDetailDTO
 		public int Quantity { get; set; } = 1;
 
 		[Required(ErrorMessage = "Koi is required")]
-		[Range(1, int.MaxValue, ErrorMessage = "Koi's identifier must be a positive integer")]
+		[Range(1, int.MaxValue, ErrorMessage = "Koi's identifier must be a non-negative number")]
 		public int KoiId { get; set; } = 0;
-    }
+
+	}
 }

@@ -118,7 +118,7 @@ namespace Application.Services
                     UserId = user.Id
                 };
                 newAddress.Id = 0;
-                await _unitOfWork.AddressRepo.AddAsync(newAddress);
+                await _unitOfWork.addressRepo.AddAsync(newAddress);
                 response.Message = "Adress add Successfully";
                 response.Data = addressDTO;
                 response.Success = true;
@@ -155,7 +155,7 @@ namespace Application.Services
                     response.Message = "You dont have permision to delete this address";
                     return response;
                 }
-                await _unitOfWork.AddressRepo.cDeleteTokenAsync(address);
+                await _unitOfWork.addressRepo.cDeleteTokenAsync(address);
                 response.Data = "Adress remove Successfully";
                 response.Success = true;
             }
@@ -197,7 +197,7 @@ namespace Application.Services
                 // Update the product in the repository
                 MapAddress(addressDTO, address);
 
-                await _unitOfWork.AddressRepo.Update(address);
+                await _unitOfWork.addressRepo.Update(address);
                 response.Message = "Adress Update Successfully";
                 response.Data = addressDTO;
                 response.Success = true;

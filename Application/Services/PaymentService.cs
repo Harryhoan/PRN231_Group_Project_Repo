@@ -30,12 +30,13 @@ namespace Application.Services
 			_mapper = mapper;
 			_unitOfWork = unitOfWork;
 		}
-		public async Task<ServiceResponse<string>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl, int addressId)
+		public async Task<ServiceResponse<string>> CreatePaymentAsync(int userId, string returnUrl, string cancelUrl)
 		{
 			var response = new ServiceResponse<string>();
 
 			try
 			{
+
 				var order = await ValidateOrder(userId);
 				if (order == null)
 				{
@@ -44,18 +45,7 @@ namespace Application.Services
 					return response;
 				}
 
-				var address = await _unitOfWork.AddressRepo.GetByIdAsync(addressId);
-				if (address == null)
-				{
-                    response.Success = false;
-                    response.Message =  "The address is invalid. Please try again.";
-                    return response;
-                }
-
-				order.AddressId = address.Id;
-				await _unitOfWork.OrderRepository.Update(order);
-
-                decimal conversionRate = 23000m;
+				decimal conversionRate = 23000m;
 				decimal totalAmountVND = order.TotalPrice;
 				decimal totalAmountUSD = totalAmountVND / conversionRate;
 				string totalAmountInUSD = totalAmountUSD.ToString("F2");
