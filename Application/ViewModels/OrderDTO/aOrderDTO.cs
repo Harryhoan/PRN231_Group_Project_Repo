@@ -17,7 +17,7 @@ namespace Application.ViewModels.OrderDTO
 		public decimal TotalPrice { get; set; }
 		public int UserId { get; set; }
 
-		[JsonIgnore]
+		//[JsonIgnore]
 		public UserDTO.AddressDTO? Address { get; set; } = null;
 		public List<aViewOrderDetailDTO> OrderDetails { get; set; } = new List<aViewOrderDetailDTO>();
 
