@@ -16,6 +16,7 @@ namespace Domain.Entities
         public int? AddressId { get; set; } = null;
         public int UserId { get; set; }
         public User User { get; set; }
+        public Address? Address { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

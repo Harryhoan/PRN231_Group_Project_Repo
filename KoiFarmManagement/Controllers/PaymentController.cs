@@ -16,6 +16,11 @@ namespace KoiFarmManagement.Controllers
             _paymentService = paymentService;
             _orderDetailService = orderService;
         }
+
+        /// <summary>
+        /// Create a new payment
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpPost("create")]
         public async Task<IActionResult> CreatePayment()
@@ -33,7 +38,13 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
-
+        /// <summary>
+        /// Exercute if the payment is success or not 
+        /// </summary>
+        /// <param name="paymentId"></param>
+        /// <param name="token"></param>
+        /// <param name="PayerID"></param>
+        /// <returns></returns>
         [HttpGet("execute")]
         [AllowAnonymous]
         public async Task<IActionResult> ExecutePayment([FromQuery] string paymentId, [FromQuery] string token, [FromQuery] string PayerID)

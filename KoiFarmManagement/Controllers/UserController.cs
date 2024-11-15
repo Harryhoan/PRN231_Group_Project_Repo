@@ -19,6 +19,10 @@ namespace KoiFarmManagement.Controllers
         {
             _userService = cIUserService;
         }
+        /// <summary>
+        /// Get user information
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpGet("Profile")]
         public async Task<IActionResult> GetProfile()
@@ -34,6 +38,10 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(user);
         }
+        /// <summary>
+        /// List out user address
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpGet("Address")]
         public async Task<IActionResult> GetAddress()
@@ -49,7 +57,11 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
-
+        /// <summary>
+        /// Update user information
+        /// </summary>
+        /// <param name="profileDTO"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpPut("Profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] ProfileDTO profileDTO)
@@ -65,6 +77,12 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
+
+        /// <summary>
+        /// Update user address
+        /// </summary>
+        /// <param name="addressDTO"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpPut("Address")]
         public async Task<IActionResult> UpdateAddress( [FromBody] AddressDTO addressDTO)
@@ -80,6 +98,12 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
+
+        /// <summary>
+        /// Delete user address
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpDelete("Address/{id}")]
         public async Task<IActionResult> DeleteAddress([FromRoute] int id)
@@ -95,6 +119,12 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
+
+        /// <summary>
+        /// Create a new address
+        /// </summary>
+        /// <param name="addressDTO"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpPost("Address/")]
         public async Task<IActionResult> AddAddress([FromBody] AddressDTO addressDTO)

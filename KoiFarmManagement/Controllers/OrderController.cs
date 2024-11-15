@@ -21,6 +21,10 @@ namespace KoiFarmManagement.Controllers
 			_orderService = orderService;
 		}
 
+		/// <summary>
+		/// List out item in cart 
+		/// </summary>
+		/// <returns></returns>
 		[Authorize(Roles = "Customer")]
 		[HttpGet("/cart")]
 		public async Task<IActionResult> GetCart()
@@ -38,6 +42,10 @@ namespace KoiFarmManagement.Controllers
 			return Ok(result);
 		}
 
+        /// <summary>
+        /// List out order history
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpGet("/history")]
         public async Task<IActionResult> GetOrderHistory()
@@ -54,8 +62,11 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
-
-		[Authorize(Roles = "Admin")]
+        /// <summary>
+        /// Get all orders for admin
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
 		[HttpGet("/admin/all")]
 		public async Task<IActionResult> GetOrders()
 		{
@@ -67,8 +78,12 @@ namespace KoiFarmManagement.Controllers
 			return Ok(result);
 		}
 
-
-		[Authorize(Roles = "Customer")]
+        /// <summary>
+        /// Adding new item to cart
+        /// </summary>
+        /// <param name="cart"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Customer")]
 		[HttpPost("addtocart")]
 		public async Task<IActionResult> AddToCart(aCreateOrderDetailDTO cart)
 		{
@@ -84,6 +99,11 @@ namespace KoiFarmManagement.Controllers
 			}
 			return Ok(result);
 		}
+		/// <summary>
+		/// Update address in order
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
         [Authorize(Roles = "Customer")]
         [HttpPut("Address/{id}")]
         public async Task<IActionResult> UpdateOrderAddress([FromRoute] int id)
@@ -100,7 +120,11 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
-
+        /// <summary>
+        /// Delete order
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Customer")]
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteCart([FromRoute] int id)

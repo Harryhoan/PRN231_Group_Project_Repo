@@ -122,6 +122,10 @@ namespace Application.Services
                 }
                 if(order.AddressId == null)
                 {
+                    if (!(order.OrderDetails.Count > 0))
+                    {
+                        response.Message = "No Product Found";
+                    }
                     var orderDto = _mapper.Map<aOrderDTO>(order);
                     response.Data = orderDto;
                     response.Success = true;
@@ -129,7 +133,12 @@ namespace Application.Services
                 }
                 else
                 {
-                    var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
+                    var address = await _unitOfWork.AddressRepo.GetByIdAsync((int)order.AddressId);
+                    order.Address = address;
+                    if (!(order.OrderDetails.Count > 0))
+                    {
+                        response.Message = "No Product Found";
+                    }
                     var orderDto = _mapper.Map<aOrderDTO>(order);
                     orderDto.Address = _mapper.Map<AddressDTO>(address);
                     response.Data = orderDto;
@@ -154,6 +163,9 @@ namespace Application.Services
                 {
                     throw new ArgumentNullException(nameof(orders));
                 }
+
+                var orderDtos = new List<aOrderDTO>();
+
                 if (orders.Any() && orders.First().OrderDetails != null)
                 {
                     foreach (var order in orders)
@@ -167,14 +179,20 @@ namespace Application.Services
                             }
                             orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
+
+                        var address = await _unitOfWork.AddressRepo.GetByIdAsync((int)order.AddressId);
                         if (address == null)
                         {
                             throw new ArgumentException(nameof(address));
                         }
+
+                        var orderDto = _mapper.Map<aOrderDTO>(order);
+                        orderDto.Address = _mapper.Map<AddressDTO>(address);
+                        orderDtos.Add(orderDto);
                     }
                 }
-                response.Data = _mapper.Map<List<aOrderDTO>>(orders);
+
+                response.Data = orderDtos;
                 response.Success = true;
             }
             catch (Exception ex)
@@ -182,8 +200,10 @@ namespace Application.Services
                 response.Success = false;
                 response.Message = $"Failed to get all orders: {ex.Message}";
             }
+
             return response;
         }
+
 
         public async Task<ServiceResponse<List<aOrderDTO>>> GetOrdersByUser(User user)
         {
@@ -195,6 +215,9 @@ namespace Application.Services
                 {
                     throw new ArgumentNullException(nameof(orders));
                 }
+
+                var orderDtos = new List<aOrderDTO>();
+
                 if (orders.Count > 0 && orders.First().OrderDetails != null)
                 {
                     foreach (var order in orders)
@@ -208,15 +231,23 @@ namespace Application.Services
                             }
                             orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
-                        if (address == null)
-                        {
-                            throw new ArgumentException(nameof(address));
-                        }
+
+                        var address = order.AddressId.HasValue
+                            ? await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value)
+                            : null;
+                        //if (address == null)
+                        //{
+                        //    throw new ArgumentException(nameof(address));
+                        //}
+
+                        var orderDto = _mapper.Map<aOrderDTO>(order);
+                        orderDto.Address = _mapper.Map<AddressDTO>(address);
+                        orderDtos.Add(orderDto);
                     }
                 }
+
                 orders.RemoveAll(x => !x.OrderStatus);
-                response.Data = _mapper.Map<List<aOrderDTO>>(orders);
+                response.Data = orderDtos;
                 response.Success = true;
             }
             catch (Exception ex)
@@ -224,8 +255,10 @@ namespace Application.Services
                 response.Success = false;
                 response.Message = $"Failed to get orders by user: {ex.Message}";
             }
+
             return response;
         }
+
         public async Task<ServiceResponse<string>> UpdateAddress(int addressId, User user)
         {
             var response = new ServiceResponse<string>();

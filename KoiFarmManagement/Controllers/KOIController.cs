@@ -53,7 +53,11 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
-
+        /// <summary>
+        /// Get koi by filter 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("filter")]
         public async Task<IActionResult> GetFilteredKOIsAsync([FromQuery] dFilterKoiDTO filter)
@@ -67,7 +71,12 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
-    
+        /// <summary>
+        /// Get koi list 
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("get")]
         public async Task<IActionResult> GetAllKoisAsync(int pageNumber, int pageSize)
@@ -81,7 +90,15 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
 
-        [AllowAnonymous]
+        /// <summary>
+        /// Get all koi by admin
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="search"></param>
+        /// <param name="sort"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin, staff")]
         [HttpGet]
         public async Task<IActionResult> cGetAllProductsAdmin([FromQuery] int page = 1, [FromQuery] int pageSize = 5,
           [FromQuery] string? search = "", [FromQuery] string? sort = "")
@@ -93,6 +110,12 @@ namespace KoiFarmManagement.Controllers
             }
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get koi by koiId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetKoiById(int id)
@@ -105,7 +128,7 @@ namespace KoiFarmManagement.Controllers
 
             return Ok(result);
         }
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, staff")]
         [HttpGet("{id}")]
         public async Task<IActionResult> cGetKoiByIdAdminNotImage(int id)
         {

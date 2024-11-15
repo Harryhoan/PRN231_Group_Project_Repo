@@ -16,6 +16,7 @@ namespace Domain.Entities
 
         // Foreign key
         public int UserId { get; set; }
+        public Order Order { get; set; }
         public User User { get; set; }
     }
 }
