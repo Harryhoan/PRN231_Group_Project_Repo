@@ -31,7 +31,7 @@ namespace Infrastructure.Repositories
         }
         public async Task<Review?> GetReviewByProductIdAsync(int productId)
         {
-            return await _dbContext.Reviews.FirstOrDefaultAsync(r => r.OrderDetail.KoiId == productId);
+            return await _dbContext.Reviews.Include(r => r.OrderDetail).FirstOrDefaultAsync(r => r.OrderDetail.KoiId == productId);
         }
     }
 }

@@ -121,7 +121,7 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
         /// <summary>
-        /// Delete order
+        /// Delete cart
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

@@ -180,8 +180,7 @@ namespace Application.Services
                             orderDetail.Koi = koi;
                         }
 
-                        var address = await _unitOfWork.AddressRepo.GetByIdAsync((int)order.AddressId);
-                        if (address == null)
+                        if (order.AddressId != null)
                         {
                             var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
                             if (address == null)
@@ -192,7 +191,6 @@ namespace Application.Services
                         }
 
                         var orderDto = _mapper.Map<aOrderDTO>(order);
-                        orderDto.Address = _mapper.Map<AddressDTO>(address);
                         orderDtos.Add(orderDto);
                     }
                 }
@@ -250,8 +248,12 @@ namespace Application.Services
                         orderDtos.Add(orderDto);
                     }
                 }
+                if (!(orders.Count > 0))
+                {
+                    response.Message = "No Order Found";
+                }
 
-                orders.RemoveAll(x => !x.OrderStatus);
+                orderDtos.RemoveAll(x => !x.OrderStatus);
                 response.Data = orderDtos;
                 response.Success = true;
             }

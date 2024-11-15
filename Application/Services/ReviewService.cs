@@ -38,7 +38,7 @@ namespace Application.Services
                     response.Message = "Review not found";
                     return response;
                 }
-                await _unitOfWork.ReviewRepository.Remove(review);
+                await _unitOfWork.ReviewRepository.cDeleteTokenAsync(review);
                 response.Success = true;
                 response.Message = "Review deleted successfully.";
                 return response;
@@ -68,14 +68,14 @@ namespace Application.Services
                     response.Message = "Review not found";
                     return response;
                 }
-                var existingOrderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(existingReview.Id);
-                if (existingReview == null)
+                var existingOrderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(existingReview.OrderDetailId);
+                if (existingOrderDetail == null)
                 {
                     response.Success = false;
                     response.Message = "Order detail not found";
                     return response;
                 }
-                if (user.Role == "Customer" && !(await _unitOfWork.OrderDetailRepository.CheckOrderDetailBelongingToUser(existingReview.Id, user.Id)))
+                if (user.Role == "Customer" && !(await _unitOfWork.OrderDetailRepository.CheckOrderDetailBelongingToUser(existingOrderDetail.Id, user.Id)))
                 {
                     response.Success = false;
                     response.Message = "Unauthorized modification";
@@ -86,7 +86,7 @@ namespace Application.Services
                 await _unitOfWork.ReviewRepository.Update(existingReview);
                 response.Data = _mapper.Map<ReviewDTO>(existingReview);
                 response.Success = true;
-                response.Message = "Review found successfully";
+                response.Message = "Review Updated Successfully";
                 return response;
             }
             catch (Exception ex)
@@ -214,14 +214,20 @@ namespace Application.Services
                 }
 
                 var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+                if (koi == null)
+                {
+                    response.Success = false;
+                    response.Error = "Error: Koi Not Found.";
+                    return response;
+                }
 
-                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
+                var koiImages = await _unitOfWork.ImageRepository.aGetImagesByKoiIdAsync(koi.Id);
 
                 var reviewResponse = _mapper.Map<ReviewDTO>(review);
                 response.Data = new ReviewDTO
                 {
                     KoiName = koi.Name,
-                    KoiImage = koiImage.ImageUrl,
+                    KoiImage = koiImages.Count > 0 ? koiImages.First().ImageUrl : "No Image Available",
                     Rating = reviewResponse.Rating,
                     Comment = reviewResponse.Comment,
                     Id = reviewResponse.Id,
@@ -238,36 +244,47 @@ namespace Application.Services
                 return response;
             }
         }
-        public async Task<ServiceResponse<ReviewDTO>> GetReviewByKoiAsync(int reviewId)
+        public async Task<ServiceResponse<ReviewDTO>> GetReviewByKoiAsync(int koiId)
         {
             var response = new ServiceResponse<ReviewDTO>();
 
             try
             {
-                var reviews = await _unitOfWork.ReviewRepository.GetReviewByProductIdAsync(reviewId);
-                if (reviews == null)
+                var review = await _unitOfWork.ReviewRepository.GetReviewByProductIdAsync(koiId);
+                if (review == null)
                 {
                     response.Success = false;
                     response.Message = "No reviews found for the specified Koi.";
                     return response;
                 }
-                var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(reviews.OrderDetailId);
+                var orderDetail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(review.OrderDetailId);
                 if (orderDetail == null)
                 {
                     response.Success = false;
                     response.Message = "Order detail not found";
                     return response;
                 }
+                if (orderDetail.Id == review.Id && orderDetail.IsReviewed == false)
+                {
+                    orderDetail.IsReviewed = true;
+                    await _unitOfWork.OrderDetailRepository.Update(orderDetail);
+                }
 
                 var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+                if (koi == null)
+                {
+                    response.Success = false;
+                    response.Error = "Error: Koi Not Found.";
+                    return response;
+                }
 
-                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
+                var koiImages = await _unitOfWork.ImageRepository.aGetImagesByKoiIdAsync(koi.Id);
 
-                var reviewResponse = _mapper.Map<ReviewDTO>(reviews);
+                var reviewResponse = _mapper.Map<ReviewDTO>(review);
                 response.Data = new ReviewDTO
                 {
                     KoiName = koi.Name,
-                    KoiImage = koiImage.ImageUrl,
+                    KoiImage = koiImages.Count > 0 ? koiImages.First().ImageUrl : "No Image Available",
                     Rating = reviewResponse.Rating,
                     Comment = reviewResponse.Comment,
                     Id = reviewResponse.Id,
@@ -310,14 +327,20 @@ namespace Application.Services
                 }
 
                 var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+                if (koi == null)
+                {
+                    response.Success = false;
+                    response.Error = "Error: Koi Not Found.";
+                    return response;
+                }
 
-                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
+                var koiImages = await _unitOfWork.ImageRepository.aGetImagesByKoiIdAsync(koi.Id);
 
                 var reviewResponse = _mapper.Map<ReviewDTO>(review);
                 response.Data = new ReviewDTO
                 {
                     KoiName = koi.Name,
-                    KoiImage = koiImage.ImageUrl,
+                    KoiImage = koiImages.Count > 0 ? koiImages.First().ImageUrl : "No Image Available",
                     Rating = reviewResponse.Rating,
                     Comment = reviewResponse.Comment,
                     Id = reviewResponse.Id,
@@ -362,7 +385,15 @@ namespace Application.Services
                     response.Message = "Order has already had a review.";
                     return response;
                 }
-                
+
+                var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
+                if (koi == null)
+                {
+                    response.Success = false;
+                    response.Error = "Error: Koi Not Found.";
+                    return response;
+                }
+
                 review.OrderDetailId = orderId;
                 review.Rating = reviewRequest.Rating;
                 review.Comment = reviewRequest.Comment;
@@ -370,18 +401,15 @@ namespace Application.Services
                 await _unitOfWork.ReviewRepository.AddAsync(review);
 
                 orderDetail.IsReviewed = true;
-                await _unitOfWork.SaveChangeAsync();
+                await _unitOfWork.OrderDetailRepository.Update(orderDetail);
+                //await _unitOfWork.SaveChangeAsync();
 
-                var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
-
-
-                var koiImage = await _unitOfWork.ImageRepository.GetByIdAsync(koi.Id);
-
+                var koiImages = await _unitOfWork.ImageRepository.aGetImagesByKoiIdAsync(koi.Id);
                 var reviewResponse = _mapper.Map<ReviewDTO>(review);
                 response.Data = new ReviewDTO
                 {
                     KoiName = koi.Name,
-                    KoiImage = koiImage.ImageUrl,
+                    KoiImage = koiImages.Count > 0 ? koiImages.First().ImageUrl : "No Image Available",
                     Rating = reviewResponse.Rating,
                     Comment = reviewResponse.Comment,
                     Id = reviewResponse.Id,
