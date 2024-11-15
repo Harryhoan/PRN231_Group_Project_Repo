@@ -120,7 +120,7 @@ namespace Application.Services
                     }
                     orderDetail.Koi = koi;
                 }
-                if(order.AddressId == null)
+                if (order.AddressId == null)
                 {
                     if (!(order.OrderDetails.Count > 0))
                     {
@@ -183,7 +183,12 @@ namespace Application.Services
                         var address = await _unitOfWork.AddressRepo.GetByIdAsync((int)order.AddressId);
                         if (address == null)
                         {
-                            throw new ArgumentException(nameof(address));
+                            var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
+                            if (address == null)
+                            {
+                                throw new ArgumentException(nameof(address));
+                            }
+                            order.Address = address;
                         }
 
                         var orderDto = _mapper.Map<aOrderDTO>(order);
