@@ -129,7 +129,7 @@ namespace Application.Services
                 }
                 else
                 {
-                    var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
+                    var address = await _unitOfWork.AddressRepo.GetByIdAsync((int)order.AddressId);
                     var orderDto = _mapper.Map<aOrderDTO>(order);
                     orderDto.Address = _mapper.Map<AddressDTO>(address);
                     response.Data = orderDto;
@@ -167,10 +167,14 @@ namespace Application.Services
                             }
                             orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
-                        if (address == null)
+                        if (order.AddressId != null)
                         {
-                            throw new ArgumentException(nameof(address));
+                            var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
+                            if (address == null)
+                            {
+                                throw new ArgumentException(nameof(address));
+                            }
+                            order.Address = address;
                         }
                     }
                 }
@@ -208,10 +212,14 @@ namespace Application.Services
                             }
                             orderDetail.Koi = koi;
                         }
-                        var address = await _unitOfWork.addressRepo.GetByIdAsync((int)order.AddressId);
-                        if (address == null)
+                        if (order.AddressId != null)
                         {
-                            throw new ArgumentException(nameof(address));
+                            var address = await _unitOfWork.AddressRepo.GetByIdAsync(order.AddressId.Value);
+                            if (address == null)
+                            {
+                                throw new ArgumentException(nameof(address));
+                            }
+                            order.Address = address;
                         }
                     }
                 }
