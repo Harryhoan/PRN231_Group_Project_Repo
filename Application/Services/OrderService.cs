@@ -120,8 +120,12 @@ namespace Application.Services
                     }
                     orderDetail.Koi = koi;
                 }
-                if(order.AddressId == null)
+                if (order.AddressId == null)
                 {
+                    if (!(order.OrderDetails.Count > 0))
+                    {
+                        response.Message = "No Product Found";
+                    }
                     var orderDto = _mapper.Map<aOrderDTO>(order);
                     response.Data = orderDto;
                     response.Success = true;
@@ -130,6 +134,11 @@ namespace Application.Services
                 else
                 {
                     var address = await _unitOfWork.AddressRepo.GetByIdAsync((int)order.AddressId);
+                    order.Address = address;
+                    if (!(order.OrderDetails.Count > 0))
+                    {
+                        response.Message = "No Product Found";
+                    }
                     var orderDto = _mapper.Map<aOrderDTO>(order);
                     orderDto.Address = _mapper.Map<AddressDTO>(address);
                     response.Data = orderDto;
@@ -224,6 +233,10 @@ namespace Application.Services
                     }
                 }
                 orders.RemoveAll(x => !x.OrderStatus);
+                if (orders.Count < 1)
+                {
+                    response.Message = "There is no order.";
+                }
                 response.Data = _mapper.Map<List<aOrderDTO>>(orders);
                 response.Success = true;
             }
