@@ -85,6 +85,7 @@ namespace Application.Services
                 existingReview.Rating = review.Rating;
                 await _unitOfWork.ReviewRepository.Update(existingReview);
                 response.Data = _mapper.Map<ReviewDTO>(existingReview);
+                response.Data.UserFullName = user.FullName;
                 response.Success = true;
                 response.Message = "Review Updated Successfully";
                 return response;
@@ -122,7 +123,22 @@ namespace Application.Services
                         var reviewDTO = _mapper.Map<ReviewDTO>(review);
                         reviewDTO.KoiName = koi.Name;
                         reviewDTO.KoiImage = koiImages.FirstOrDefault()?.ImageUrl;
-
+                        
+                        var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderDetail.OrderId);
+                        if (order == null)
+                        {
+                            response.Success = false;
+                            response.Error = "Order not found";
+                            return response;
+                        }
+                        var user = await _unitOfWork.UserRepository.GetByIdAsync(order.UserId);
+                        if (user == null)
+                        {
+                            response.Success = false;
+                            response.Error = "User not found";
+                            return response;
+                        }
+                        reviewDTO.UserFullName = user.FullName;
                         reviewDTOs.Add(reviewDTO);
                     }
                 }
@@ -167,7 +183,21 @@ namespace Application.Services
                         var reviewDTO = _mapper.Map<ReviewDTO>(review);
                         reviewDTO.KoiName = koi.Name;
                         reviewDTO.KoiImage = koiImages.FirstOrDefault()?.ImageUrl;
-
+                        var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderDetail.OrderId);
+                        if (order == null)
+                        {
+                            response.Success = false;
+                            response.Error = "Order not found";
+                            return response;
+                        }
+                        var user = await _unitOfWork.UserRepository.GetByIdAsync(order.UserId);
+                        if (user == null)
+                        {
+                            response.Success = false;
+                            response.Error = "User not found";
+                            return response;
+                        }
+                        reviewDTO.UserFullName = user.FullName;
                         reviewDTOs.Add(reviewDTO);
                     }
                 }
@@ -231,6 +261,7 @@ namespace Application.Services
                     Rating = reviewResponse.Rating,
                     Comment = reviewResponse.Comment,
                     Id = reviewResponse.Id,
+                    UserFullName = user.FullName,
                     OrderDetailId = reviewResponse.OrderDetailId
                 };
                 response.Success = true;
@@ -269,7 +300,20 @@ namespace Application.Services
                     orderDetail.IsReviewed = true;
                     await _unitOfWork.OrderDetailRepository.Update(orderDetail);
                 }
-
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderDetail.OrderId);
+                if (order == null)
+                {
+                    response.Success = false;
+                    response.Error = "Order not found";
+                    return response;
+                }
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(order.UserId);
+                if (user == null)
+                {
+                    response.Success = false;
+                    response.Error = "User not found";
+                    return response;
+                }
                 var koi = await _unitOfWork.KoiRepo.GetByIdAsync(orderDetail.KoiId);
                 if (koi == null)
                 {
@@ -288,6 +332,7 @@ namespace Application.Services
                     Rating = reviewResponse.Rating,
                     Comment = reviewResponse.Comment,
                     Id = reviewResponse.Id,
+                    UserFullName = user.FullName,
                     OrderDetailId = reviewResponse.OrderDetailId
                 };
                 response.Success = true;
@@ -344,6 +389,7 @@ namespace Application.Services
                     Rating = reviewResponse.Rating,
                     Comment = reviewResponse.Comment,
                     Id = reviewResponse.Id,
+                    UserFullName = user.FullName,
                     OrderDetailId = reviewResponse.OrderDetailId
                 };
                 response.Success = true;

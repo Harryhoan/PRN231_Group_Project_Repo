@@ -23,7 +23,7 @@ namespace KoiFarmManagement.Controllers
         }
 
         /// <summary>
-        /// Get all review by admin
+        /// Get all reviews by admin
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
@@ -58,12 +58,12 @@ namespace KoiFarmManagement.Controllers
             return Ok(result);
         }
         /// <summary>
-        /// Admin gets review by reviewId
+        /// Get review by reviewId
         /// </summary>
         /// <param name="reviewId"></param>
         /// <returns></returns>
         [HttpGet("{reviewId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> GetReviewAsync([FromRoute] int reviewId)
         {
             var user = await _orderDetailService.aGetUserByTokenAsync(HttpContext.User);

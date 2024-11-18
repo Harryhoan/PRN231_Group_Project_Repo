@@ -98,7 +98,7 @@ namespace KoiFarmManagement.Controllers
         /// <param name="search"></param>
         /// <param name="sort"></param>
         /// <returns></returns>
-        [Authorize(Roles = "Admin, staff")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> cGetAllProductsAdmin([FromQuery] int page = 1, [FromQuery] int pageSize = 5,
           [FromQuery] string? search = "", [FromQuery] string? sort = "")
